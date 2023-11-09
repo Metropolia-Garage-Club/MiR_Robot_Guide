@@ -18,12 +18,13 @@ headers['Content.Type']= 'application/json'
 headers['Authorization'] = 'Basic ZGlzdHJpYnV0b3I6YjcyZDlkYzljMWYzNjg2MTBiMzBiZTJjZDc5OTAwOTAzYzk5MDYzNzA3NTY3M2NkMzliYjA4ZmJjYjc2YmIzYQ=='
 
 missions = [
-    ""
+    "19989020-6757-11ee-8e81-000129922f30"
+    #Populate with Mission GUID#
     ]
 
 #you need one per mission
-def post_missions(host, headers):
-    mission_id = {"mission_id": "19989020-6757-11ee-8e81-000129922f30"} #Mission guid here
+def post_missions(host, headers, mission_num):
+    mission_id = {"mission_id": missions[mission_num]} #Mission guid here
     post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
     print(post_mission)
     
