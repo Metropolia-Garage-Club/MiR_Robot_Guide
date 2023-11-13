@@ -2,10 +2,78 @@ import "./styles.css";
 import Office from "./img";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 export default function App() {
   const [selected, setSelected] = useState(undefined);
+
+  let idle = useNavigate();
+
+  // This timeout needs to be triggered by something retrieved from the MiR API
+  useEffect(() => {
+    // if (guide mission complete)
+    const timeout = setTimeout(myTimeout, 180000); //3 min, 10000 = 10 seconds
+    return () => clearTimeout(timeout);
+  })
   
+  function myTimeout() {
+    axios({
+      method: "POST",
+      url: "/detect_wave",
+      data:{idle_state: 1},
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+
+    idle('/L0mk/MiR_Robot_Guide/');
+  }
+
+  function clickKirjasto() {
+    //console.log("Kirjasto has been clicked")
+    alert("Kirjasto")
+  }
+
+  function clickHissit() {
+    alert("Hissit")
+  }
+
+  function clickAuditorio() {
+    alert("Auditorio")
+  }
+
+  function clickUlysseus() {
+    alert("Ulysseus")
+  }
+
+  function clickUlToimisto() {
+    alert("Ulysseus Toimisto")
+  }
+
+  function clickKahvio() {
+    alert("Kahvio")
+  }
+
+  function clickRuokala() {
+    alert("Ruokala")
+  }
+
+  function clickWC1() {
+    alert("WC 1")
+  }
+
+  function clickWC2() {
+    alert("WC 2")
+  }
+
   return (
     <div className="App">
       <div className="rooms">
@@ -19,7 +87,7 @@ export default function App() {
 		<div
           onMouseEnter={() => setSelected("kirjasto")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick={() => alert("Kirjasto")} 
+		      onClick={() => clickKirjasto()}
           className={`room-link ${selected === "kirjasto" ? "active" : ""}`}
         >
           <span
@@ -33,7 +101,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("hissit")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick={() => alert("Hissit")} 
+		  onClick={() => clickHissit()} 
           className={`room-link ${selected === "hissit" ? "active" : ""}`}
         >
           <span
@@ -51,7 +119,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("auditorio")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Auditorio")}
+		  onClick ={() => clickAuditorio()}
           className={`room-link ${selected === "auditorio" ? "active" : ""}`}
         >
           <span
@@ -65,7 +133,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("ulysseus")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Ulysseus")}
+		  onClick ={() => clickUlysseus()}
           className={`room-link ${selected === "ulysseus" ? "active" : ""}`}
         >
           <span
@@ -79,7 +147,7 @@ export default function App() {
 		<div
           onMouseEnter={() => setSelected("ulysseus-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Ulysseus Toimisto")}
+		  onClick ={() => clickUlToimisto()}
           className={`room-link ${selected === "ulysseus-2" ? "active" : ""}`}
         >
           <span
@@ -97,7 +165,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("kitchen-1")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Kahvio")}
+		  onClick ={() => clickKahvio()}
           className={`room-link ${selected === "kitchen-1" ? "active" : ""}`}
         >
           <span
@@ -111,7 +179,7 @@ export default function App() {
 				<div
           onMouseEnter={() => setSelected("kitchen-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Ruokala")}
+		  onClick ={() => clickRuokala()}
           className={`room-link ${selected === "kitchen-2" ? "active" : ""}`}
         >
           <span
@@ -125,7 +193,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("wc-1")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("WC")}
+		  onClick ={() => clickWC1()}
           className={`room-link ${selected === "wc-1" ? "active" : ""}`}
         >
           <span
@@ -139,7 +207,7 @@ export default function App() {
 		<div
           onMouseEnter={() => setSelected("wc-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("WC 2")}
+		  onClick ={() => clickWC2()}
           className={`room-link ${selected === "wc-2" ? "active" : ""}`}
         >
           <span

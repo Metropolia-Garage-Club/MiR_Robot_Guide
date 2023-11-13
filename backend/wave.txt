@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"wave_detected":0}
+=======
+{"wave_detected": 1}
+>>>>>>> main
