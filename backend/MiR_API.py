@@ -24,10 +24,10 @@ headers['Authorization'] = 'Basic ZGlzdHJpYnV0b3I6YjcyZDlkYzljMWYzNjg2MTBiMzBiZT
 #Populate with Mission GUID#
 missions = [
     "62cc1d9f-71ab-11ee-a445-000129922f30",     #0 - Ulyseus
-    "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC
+    "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC / Ulyseus toimisto
     "37bdd030-71ac-11ee-a445-000129922f30",     #2 - Auditorio
     "c652434b-7254-11ee-a57f-000129922f30",     #3 - Kahvila
-    "e1246867-7254-11ee-a57f-000129922f30",     #4 - Hissit
+    "e1246867-7254-11ee-a57f-000129922f30",     #4 - Hissit / Kirjasto
     "07417ecd-7255-11ee-a57f-000129922f30"      #5 - Ruokala
     ]
 
