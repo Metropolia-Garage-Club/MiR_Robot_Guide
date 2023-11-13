@@ -130,14 +130,7 @@ const Office = (props) => {
           width="876"
           height="618"
         ></image>
-		<image_2
-		  xlinkHref={require("./Helia-talo pohjat 2020-03 - ruokala.jpg")}
-		  alt="Kartta2"
-		  class="responsive"
-          id="image1"
-          width="876"
-          height="618"
-        ></image_2>
+		
       </defs>
     </svg>
   );
