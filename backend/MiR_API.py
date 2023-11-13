@@ -52,7 +52,32 @@ def battery_val():
     return battery
 
 
+def check_triggers():
+    triggers = [False, False]   # triggers[0] = True for idle screen / triggers[1] = setting relay.
+    data = json.loads(get_status())
+    mission_text = data.get("mission_text")
+    state_text = data.get("state_text")
+    battery = int(round(battery_val()))
+    string = "Charging until battery reaches 95% (Current: " + str(battery) + "%)..."
+    print(string)
+    
+   
+    
+    if mission_text == string and state_text == "Executing":
+        triggers[0] = True
+    
+    if mission_text == "Charging... Waiting for new mission..." and state_text == "Executing":
+        triggers[0] = True
+        triggers[1] = True
 
-print(round(battery_val(), 2))
+    return triggers
+
+
+
+print(check_triggers())
+
+
+
+
 
     
