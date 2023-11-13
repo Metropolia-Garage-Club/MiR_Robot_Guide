@@ -4,3 +4,48 @@
 3	Kahvila		"c652434b-7254-11ee-a57f-000129922f30"
 4	Hissit		"e1246867-7254-11ee-a57f-000129922f30"
 5	Ruokala		"07417ecd-7255-11ee-a57f-000129922f30"
+
+
+
+
+
+
+"Get status body"
+
+{
+  "joystick_low_speed_mode_enabled": false,
+  "mission_queue_url": null,
+  "mode_id": 7,
+  "moved": 196235.57799225854,
+  "mission_queue_id": null,
+  "robot_name": "MiR_R1596",
+  "joystick_web_session_id": "",
+  "uptime": 10667,
+  "errors": [],
+  "unloaded_map_changes": false,
+  "distance_to_next_target": 0,
+  "serial_number": "190100005001596",
+  "mode_key_state": "idle",
+  "battery_percentage": 52.29999923706055,
+  "map_id": "1e6dd08f-6db5-11ee-99a9-000129922f30",
+  "safety_system_muted": false,
+  "mission_text": "Starting...",
+  "state_text": "EmergencyStop",
+  "velocity": {
+    "linear": 0,
+    "angular": 0
+  },
+  "footprint": "[[-0.54,0.3],[0.5,0.3],[0.5,-0.31],[-0.54,-0.31]]",
+  "user_prompt": null,
+  "allowed_methods": null,
+  "robot_model": "MiR100",
+  "mode_text": "Mission",
+  "session_id": "12a48ba0-6db5-11ee-99a9-000129922f30",
+  "state_id": 10,
+  "battery_time_remaining": 25117,
+  "position": {
+    "y": 0.9789717197418213,
+    "x": 0.989618718624115,
+    "orientation": -2.831968069076538
+  }
+}
