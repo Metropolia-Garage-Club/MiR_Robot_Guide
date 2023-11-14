@@ -69,6 +69,7 @@ const Office = (props) => {
         onMouseLeave={() => props.onHovered(undefined)}
 		onClick={() => alert("Ulysseus Toimisto")}
       />
+	  
 	  <path
         className="room kitchen"
         id="kitchen-2"

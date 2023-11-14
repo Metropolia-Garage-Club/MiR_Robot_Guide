@@ -15,8 +15,7 @@ import WC from './pages/wc';
 
 function App() {
 	return (
-		<Router>
-//		<Navbar />  enable this row to see the navbar and current page you are on
+		<Router>  
 			<Routes>
 				<Route exact path='/' exact element={<Home />} />
 				<Route path='/mainPage' element={<MainPage />} />
