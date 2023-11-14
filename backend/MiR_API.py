@@ -24,11 +24,12 @@ headers['Authorization'] = 'Basic ZGlzdHJpYnV0b3I6YjcyZDlkYzljMWYzNjg2MTBiMzBiZT
 #Populate with Mission GUID#
 missions = [
     "62cc1d9f-71ab-11ee-a445-000129922f30",     #0 - Ulyseus
-    "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC2 / Ulysseus Toimisto
+    "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC / Ulysseus Toimisto
     "37bdd030-71ac-11ee-a445-000129922f30",     #2 - Auditorio
     "c652434b-7254-11ee-a57f-000129922f30",     #3 - Kahvila / WC1
     "e1246867-7254-11ee-a57f-000129922f30",     #4 - Hissit/Kirjasto
-    "07417ecd-7255-11ee-a57f-000129922f30"      #5 - Ruokala 
+    "07417ecd-7255-11ee-a57f-000129922f30",     #5 - Ruokala
+    "bc4bab5e-82cc-11ee-973c-000129922f30"      #6 - Vessat 2 
 ]
 
 mir_api = Blueprint("mir_api",__name__)
