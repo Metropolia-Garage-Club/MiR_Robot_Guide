@@ -69,17 +69,6 @@ const Office = (props) => {
         onMouseLeave={() => props.onHovered(undefined)}
 		onClick={() => alert("Ulysseus Toimisto")}
       />
-
-	  <path
-        className="room kitchen"
-        id="kitchen-1"
-		d="M1234 345H1574V570H1234Z"
-		stroke-width="2"
-        onMouseEnter={() => props.onHovered("kitchen-1")}
-        onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Kahvio")}
-      />
-	  
 	  <path
         className="room kitchen"
         id="kitchen-2"
@@ -123,7 +112,7 @@ const Office = (props) => {
           ></use>
         </pattern>
         <image
-		  xlinkHref={require("./Helia-talo pohjat 2020-03.jpg")}
+		  xlinkHref={require("./Helia-talo-vessa.jpg")}
 		  alt="Kartta"
 		  class="responsive"
           id="image0"
