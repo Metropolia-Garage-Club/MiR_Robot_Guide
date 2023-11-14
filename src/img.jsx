@@ -130,7 +130,6 @@ const Office = (props) => {
           width="876"
           height="618"
         ></image>
-		
       </defs>
     </svg>
   );
