@@ -24,12 +24,12 @@ headers['Authorization'] = 'Basic ZGlzdHJpYnV0b3I6YjcyZDlkYzljMWYzNjg2MTBiMzBiZT
 #Populate with Mission GUID#
 missions = [
     "62cc1d9f-71ab-11ee-a445-000129922f30",     #0 - Ulyseus
-    "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC / Ulysseus Toimisto
+    "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC1 (in Kahvila)
     "37bdd030-71ac-11ee-a445-000129922f30",     #2 - Auditorio
-    "c652434b-7254-11ee-a57f-000129922f30",     #3 - Kahvila / WC1
+    "c652434b-7254-11ee-a57f-000129922f30",     #3 - Kahvila 
     "e1246867-7254-11ee-a57f-000129922f30",     #4 - Hissit/Kirjasto
-    "07417ecd-7255-11ee-a57f-000129922f30",     #5 - Ruokala
-    "bc4bab5e-82cc-11ee-973c-000129922f30"      #6 - Vessat 2 
+    "07417ecd-7255-11ee-a57f-000129922f30",     #5 - Ruokala         
+    "bc4bab5e-82cc-11ee-973c-000129922f30"      #6 - WC2 / Ulysseus Toimisto 
 ]
 
 mir_api = Blueprint("mir_api",__name__)
@@ -64,11 +64,13 @@ def get_missioncomplete():
   
 def get_status():
     status = requests.get(host + 'status', headers = headers)
+    #print("status",status)
     return status.text
 
 def battery_val():
     data = json.loads(get_status())
     battery = data.get("battery_percentage")
+    #print("battery",battery)
     return battery
 
 def check_triggers():
@@ -78,15 +80,16 @@ def check_triggers():
     state_text = data.get("state_text")
     battery = int(round(battery_val()))
     string = "Charging until battery reaches 95% (Current: " + str(battery) + "%)..."
-    print(string)
+    #print(string)
     
    
     
     if mission_text == string and state_text == "Executing":
-        triggers[0] = True # shouldn't this be false?
+        triggers[0] = True
     
     if mission_text == "Charging... Waiting for new mission..." and state_text == "Executing":
         triggers[0] = True
         triggers[1] = True
 
+    #print("triggers",triggers)
     return triggers
