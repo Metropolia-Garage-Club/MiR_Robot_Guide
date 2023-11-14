@@ -1,23 +1,33 @@
 import React from "react";
 import "./styles.css";
-import Office from "./img2";
-import { useEffect, useState } from "react";
+import Office from "./img";
 import { useNavigate } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const MainPage = () => {
 	const [selected, setSelected] = useState(undefined);
 	const navigate = useNavigate();
 	
-	backToMain(300); //set seconds to return back to main page 300=5min
+	  function clickRoom(num) {
+    axios({
+      method: "POST",
+      url: "/MiR_api",
+      params:{room_num: num,},
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+	}
 	
-	function backToMain(second){
-		setTimeout(backToMain5, second * 1000);
-	}
-	function backToMain5(){
-	navigate("/mainPage");
-	}
-		
 	return (
 
 		<div className="App">
@@ -32,7 +42,7 @@ const MainPage = () => {
 		<div
           onMouseEnter={() => setSelected("kirjasto")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick={() => alert("Kirjasto")} 
+		  onClick ={() => navigate("/kirjasto")} 
           className={`room-link ${selected === "kirjasto" ? "active" : ""}`}
         >
           <span
@@ -64,7 +74,7 @@ const MainPage = () => {
         <div
           onMouseEnter={() => setSelected("auditorio")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Auditorio")}
+		  onClick ={() => clickRoom(2)}
           className={`room-link ${selected === "auditorio" ? "active" : ""}`}
         >
           <span
@@ -78,7 +88,7 @@ const MainPage = () => {
         <div
           onMouseEnter={() => setSelected("ulysseus")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Ulysseus")}
+		  onClick ={() => clickRoom(0)}
           className={`room-link ${selected === "ulysseus" ? "active" : ""}`}
         >
           <span
@@ -92,7 +102,7 @@ const MainPage = () => {
 		<div
           onMouseEnter={() => setSelected("ulysseus-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Ulysseus Toimisto")}
+		  onClick ={() => clickRoom(6)}
           className={`room-link ${selected === "ulysseus-2" ? "active" : ""}`}
         >
           <span
@@ -110,7 +120,7 @@ const MainPage = () => {
         <div
           onMouseEnter={() => setSelected("kitchen-1")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Kahvio")}
+		  onClick ={() => clickRoom(3)}
           className={`room-link ${selected === "kitchen-1" ? "active" : ""}`}
         >
           <span
@@ -124,7 +134,7 @@ const MainPage = () => {
 				<div
           onMouseEnter={() => setSelected("kitchen-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("Ruokala")}
+		  onClick ={() => navigate("/ruokala")}
           className={`room-link ${selected === "kitchen-2" ? "active" : ""}`}
         >
           <span
@@ -138,7 +148,7 @@ const MainPage = () => {
         <div
           onMouseEnter={() => setSelected("wc-1")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("WC")}
+		  onClick ={() => navigate("/wc")}
           className={`room-link ${selected === "wc-1" ? "active" : ""}`}
         >
           <span
@@ -152,7 +162,7 @@ const MainPage = () => {
 		<div
           onMouseEnter={() => setSelected("wc-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => alert("WC 2")}
+		  onClick ={() => clickRoom(1)}
           className={`room-link ${selected === "wc-2" ? "active" : ""}`}
         >
           <span
