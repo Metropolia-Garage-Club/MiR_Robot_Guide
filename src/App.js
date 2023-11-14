@@ -6,17 +6,52 @@ import { useNavigate } from "react-router";
 
 export default function App() {
   const [selected, setSelected] = useState(undefined);
+  const [goHome, setGoHome] = useState(0);
 
   let idle = useNavigate();
 
   // This timeout needs to be triggered by something retrieved from the MiR API
   useEffect(() => {
-    // if (guide mission complete)
-    const timeout = setTimeout(myTimeout, 180000); //3 min, 10000 = 10 seconds
-    return () => clearTimeout(timeout);
+    const interval = setInterval(isGoHome,500); //0.5 seconds
+    
+    if (goHome) {
+      //const timeout1 = setTimeout(idleWarning, 7000);
+      const timeout2 = setTimeout(idleTimeout2, 180000); //180000 = 3 min, 10000 = 10 seconds
+      return () => {
+        //clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval);
+      }
+    }
   })
+
+  const isGoHome = async () => {
+    axios({
+      method: "GET",
+      url: "/MiR_api",
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+      setGoHome(res.returning_home)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+
+    console.log(goHome)
+  }
   
-  function myTimeout() {
+  /*function idleWarning() {
+    // find another way. Alert needs human interaction to close the popup
+    alert("Returning home")
+  }*/
+
+  function idleTimeout2() {
     axios({
       method: "POST",
       url: "/detect_wave",
@@ -37,37 +72,29 @@ export default function App() {
     idle('/L0mk/MiR_Robot_Guide/');
   }
 
-  function clickKirjasto() {
-    //console.log("Kirjasto has been clicked")
-    alert("Kirjasto")
-  }
-
-  function clickHissit() {
-    alert("Hissit")
-  }
-
-  function clickAuditorio() {
-    alert("Auditorio")
-  }
-
-  function clickUlysseus() {
-    alert("Ulysseus")
+  function clickRoom(num) {
+    axios({
+      method: "POST",
+      url: "/MiR_api",
+      params:{room_num: num,},
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+    
+    console.log("Room number "+toString(num))
   }
 
   function clickUlToimisto() {
     alert("Ulysseus Toimisto")
-  }
-
-  function clickKahvio() {
-    alert("Kahvio")
-  }
-
-  function clickRuokala() {
-    alert("Ruokala")
-  }
-
-  function clickWC1() {
-    alert("WC 1")
   }
 
   function clickWC2() {
@@ -87,7 +114,7 @@ export default function App() {
 		<div
           onMouseEnter={() => setSelected("kirjasto")}
           onMouseOut={() => setSelected(undefined)}
-		      onClick={() => clickKirjasto()}
+		      onClick={() => clickRoom(4)}
           className={`room-link ${selected === "kirjasto" ? "active" : ""}`}
         >
           <span
@@ -101,7 +128,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("hissit")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick={() => clickHissit()} 
+		  onClick={() => clickRoom(4)} 
           className={`room-link ${selected === "hissit" ? "active" : ""}`}
         >
           <span
@@ -119,7 +146,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("auditorio")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => clickAuditorio()}
+		  onClick ={() => clickRoom(2)}
           className={`room-link ${selected === "auditorio" ? "active" : ""}`}
         >
           <span
@@ -133,7 +160,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("ulysseus")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => clickUlysseus()}
+		  onClick ={() => clickRoom(0)}
           className={`room-link ${selected === "ulysseus" ? "active" : ""}`}
         >
           <span
@@ -165,7 +192,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("kitchen-1")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => clickKahvio()}
+		  onClick ={() => clickRoom(3)}
           className={`room-link ${selected === "kitchen-1" ? "active" : ""}`}
         >
           <span
@@ -179,7 +206,7 @@ export default function App() {
 				<div
           onMouseEnter={() => setSelected("kitchen-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => clickRuokala()}
+		  onClick ={() => clickRoom(5)}
           className={`room-link ${selected === "kitchen-2" ? "active" : ""}`}
         >
           <span
@@ -193,7 +220,7 @@ export default function App() {
         <div
           onMouseEnter={() => setSelected("wc-1")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => clickWC1()}
+		  onClick ={() => clickRoom(1)}
           className={`room-link ${selected === "wc-1" ? "active" : ""}`}
         >
           <span
