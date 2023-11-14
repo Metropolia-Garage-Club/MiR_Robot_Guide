@@ -8,6 +8,46 @@ import axios from "axios";
 const MainPage = () => {
 	const [selected, setSelected] = useState(undefined);
 	const navigate = useNavigate();
+	const [goHome, setGoHome] = useState(0);
+	const isGoHome = async () => {
+    axios({
+      method: "GET",
+      url: "/MiR_api",
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+      setGoHome(res.returning_home)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+	}
+	
+	function idleTimeout2() {
+    axios({
+      method: "POST",
+      url: "/detect_wave",
+      data:{idle_state: 1},
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+
+    navigate('/L0mk/MiR_Robot_Guide/');
+  }
 	
 	  function clickRoom(num) {
     axios({
