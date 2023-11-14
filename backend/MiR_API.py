@@ -7,10 +7,23 @@ PasilaHUB MIR API test
 
 ##rom tkinter import *
 #import pprint
+import RPi.GPIO as GPIO
 import requests, json
 from flask import Blueprint, request
+import datetime
 
 #pp = pprint.PrettyPrinter(indent=4)
+
+# Pin Definitions
+output_pin = 18  # BCM pin 18, BOARD pin 12
+
+
+# Pin Setup:
+GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
+# set pin as an output pin with optional initial state of HIGH
+GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
+
+curr_value = GPIO.LOW
 
 #get request
 ip = '192.168.0.50'
@@ -72,6 +85,7 @@ def battery_val():
     return battery
 
 def check_triggers():
+    current_time = datetime.datetime.now()
     triggers = [False, False]   # triggers[0] = True for idle screen / triggers[1] = setting relay.
     data = json.loads(get_status())
     mission_text = data.get("mission_text")
@@ -89,4 +103,23 @@ def check_triggers():
         triggers[0] = True
         triggers[1] = True
 
+    if current_time.hour < 18 or current_time.hour > 7:
+        triggers[1] = False
+
+
+    if triggers[1] == True:
+            
+        GPIO.output(output_pin, GPIO.HIGH)
+
+    else: 
+        GPIO.output(output_pin, GPIO.LOW)
+
+
+
     return triggers
+
+
+
+
+
+
