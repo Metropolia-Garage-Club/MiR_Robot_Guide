@@ -1,13 +1,23 @@
 import React from "react";
 import "./styles.css";
-import Office from "./img";
-import { useNavigate } from "react-router-dom";
+import Office from "./img4";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const MainPage = () => {
 	const [selected, setSelected] = useState(undefined);
 	const navigate = useNavigate();
+	
+	backToMain(300); //set seconds to return back to main page 300=5min
+	
+	function backToMain(second){
+		setTimeout(backToMain5, second * 1000);
+	}
+	function backToMain5(){
+	navigate("/mainPage");
+	}
+		
 	return (
 
 		<div className="App">
@@ -114,7 +124,7 @@ const MainPage = () => {
 				<div
           onMouseEnter={() => setSelected("kitchen-2")}
           onMouseOut={() => setSelected(undefined)}
-		  onClick ={() => navigate("/ruokala")}
+		  onClick ={() => alert("Ruokala")}
           className={`room-link ${selected === "kitchen-2" ? "active" : ""}`}
         >
           <span

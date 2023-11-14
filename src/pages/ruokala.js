@@ -3,6 +3,7 @@ import "./styles.css";
 import Office from "./img2";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 
 const MainPage = () => {
@@ -10,6 +11,7 @@ const MainPage = () => {
 	const navigate = useNavigate();
 	
 	backToMain(300); //set seconds to return back to main page 300=5min
+	clickRoom(5);
 	
 	function backToMain(second){
 		setTimeout(backToMain5, second * 1000);
@@ -18,6 +20,25 @@ const MainPage = () => {
 	navigate("/mainPage");
 	}
 		
+	function clickRoom(num) {
+    axios({
+      method: "POST",
+      url: "/MiR_api",
+      params:{room_num: num,},
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+	}	
+	
 	return (
 
 		<div className="App">
