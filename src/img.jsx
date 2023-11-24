@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Office = (props) => {
   const [prevEl, setPrevEl] = useState(undefined);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (props.selected) {
@@ -17,11 +20,48 @@ const Office = (props) => {
     }
   }, [props.selected, prevEl]);
 
+  function clickRoom(num) {
+    axios({
+      method: "POST",
+      url: "/MiR_api",
+      params:{room_num: num,},
+    })
+    .then((response) => {
+      const res = response.data
+      console.log(res)
+    })
+    .catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })
+  }
+
+  function toKirjasto() {
+    console.log("navigating from app to kirjasto");
+    navigate('/L0mk/MiR_Robot_Guide/kirjasto');
+  }
+
+  function toRuokala() {
+    console.log("navigating from app to ruokala");
+    navigate('/L0mk/MiR_Robot_Guide/ruokala')
+  }
+
+  function toWC1() {
+    console.log("navigating from app to WC1");
+    navigate('/L0mk/MiR_Robot_Guide/wc1')
+  }
+
+  function toMain() {
+    navigate('/L0mk/MiR_Robot_Guide/mainPage')
+  }
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-	  className="responsive"
+	    className="responsive"
       width="2469"
       height="1685"
       fill="none"
@@ -37,7 +77,10 @@ const Office = (props) => {
         strokeWidth="2"
         onMouseEnter={() => props.onHovered("hissit")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Hissit")}
+		    onClick ={() => {
+          clickRoom(4);
+          toMain();
+        }} 
       />
 
       <path
@@ -47,7 +90,10 @@ const Office = (props) => {
         stroke-width="2"
         onMouseEnter={() => props.onHovered("auditorio")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Auditorio")}
+        onClick ={() => {
+          clickRoom(2);
+          toMain();
+        }} 
       />
 
       <path
@@ -57,7 +103,10 @@ const Office = (props) => {
         stroke-width="2"
         onMouseEnter={() => props.onHovered("ulysseus")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Ulysseus")}
+        onClick ={() => {
+          clickRoom(0);
+          toMain();
+        }} 
       />
 
 	  <path
@@ -67,7 +116,10 @@ const Office = (props) => {
         stroke-width="2"
         onMouseEnter={() => props.onHovered("ulysseus-2")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Ulysseus Toimisto")}
+        onClick ={() => {
+          clickRoom(6);
+          toMain();
+        }} 
       />
 
 	  <path
@@ -77,7 +129,10 @@ const Office = (props) => {
 		stroke-width="2"
         onMouseEnter={() => props.onHovered("kitchen-1")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Kahvio")}
+        onClick ={() => {
+          clickRoom(3);
+          toMain();
+        }} 
       />
 	  
 	  <path
@@ -87,7 +142,10 @@ const Office = (props) => {
         stroke-width="2"
         onMouseEnter={() => props.onHovered("kitchen-2")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("Ruokala")}
+        onClick ={() => {
+          clickRoom(5);
+          toRuokala();
+        }}
       />
 
       <path
@@ -97,7 +155,10 @@ const Office = (props) => {
         stroke-width="2"
         onMouseEnter={() => props.onHovered("wc-1")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("WC")}
+        onClick ={() => {
+          clickRoom(1);
+          toWC1();
+        }}
       />
 	  
 	  <path
@@ -107,7 +168,10 @@ const Office = (props) => {
         stroke-width="2"
         onMouseEnter={() => props.onHovered("wc-2")}
         onMouseLeave={() => props.onHovered(undefined)}
-		onClick={() => alert("WC-2")}
+        onClick ={() => {
+          clickRoom(6);
+          toMain();
+        }} 
       />
 
       <defs>

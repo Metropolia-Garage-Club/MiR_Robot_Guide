@@ -8,15 +8,7 @@
 }
 
 .button {
-  font: bold 50px Arial;
-  text-decoration: none;
-  background-color: #EEEEEE;
-  color: #333333;
-  padding: 2px 6px 2px 6px;
-  border-top: 1px solid #CCCCCC;
-  border-right: 1px solid #333333;
-  border-bottom: 1px solid #333333;
-  border-left: 1px solid #CCCCCC;
+  font: bold 100px Arial;
 }
 
 .center {
@@ -100,4 +92,18 @@
 .ulysseus {
 	fill: #34d399;
 	stroke: #34d399;
+}
+
+/* Add these styles to your CSS */
+.feedback-button {
+  padding: 8px 18px; /* Adjust padding to your liking */
+  font-size: 50px; /* Adjust font size to your liking */
+  background-color: #3b83f6e0; /* Button background color */
+  color: #ffffff; /* Button text color */
+  border: none;
+  cursor: pointer;
+}
+
+.feedback-button:hover {
+  background-color: #1d4ed8; /* Hover background color */
 }

@@ -1,0 +1,3 @@
+[1115/112212.028:ERROR:registration_protocol_win.cc(107)] CreateFile: The system cannot find the file specified. (0x2)
+[1115/112213.159:ERROR:crashpad_client_win.cc(841)] not connected
+[1115/112213.206:ERROR:registration_protocol_win.cc(107)] CreateFile: The system cannot find the file specified. (0x2)

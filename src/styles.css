@@ -7,6 +7,18 @@
   padding: 40px;
 }
 
+
+.feedback {
+  cursor: pointer;
+  border: 1px solid #030303;
+  padding: 12px 12px;
+  margin-top: 4px;
+  border-radius: 2px;
+  font-size: 36px;
+  background-color: rgb(209, 207, 207);
+  text-align: center;
+}
+
 .responsive {
   max-width: 100%;
   height: auto;

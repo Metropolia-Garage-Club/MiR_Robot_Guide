@@ -1,0 +1,16 @@
+/* Add styles to customize the appearance */
+.face-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .face-container img {
+    width: 200px; /* Adjust the size as needed */
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .face-container img.selected {
+    transform: scale(1); /* Increase size for the selected face */
+  }
