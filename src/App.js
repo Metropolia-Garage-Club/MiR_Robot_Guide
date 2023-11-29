@@ -97,19 +97,18 @@ export default function App() {
 
   function toRuokala() {
     console.log("navigating from app to ruokala");
-    navigate('/L0mk/MiR_Robot_Guide/ruokala')
+    navigate('/L0mk/MiR_Robot_Guide/ruokala');
   }
 
   function toWC1() {
     console.log("navigating from app to WC1");
-    navigate('/L0mk/MiR_Robot_Guide/wc1')
+    navigate('/L0mk/MiR_Robot_Guide/wc1');
   }
 
   function toIdle() {
     console.log("navigating from app to idle");
-    navigate('/L0mk/MiR_Robot_Guide')
+    navigate('/L0mk/MiR_Robot_Guide');
   }
-
 
   return (
     <div className="App">
@@ -140,7 +139,7 @@ export default function App() {
           onMouseOut={() => setSelected(undefined)}
 		      onClick={() => {
             clickRoom(4);
-            toKirjasto();
+            //toKirjasto();
           }}
           className={`room-link ${selected === "kirjasto" ? "active" : ""}`}
         >
