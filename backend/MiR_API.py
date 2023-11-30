@@ -160,12 +160,12 @@ def check_triggers():
     
     #if emergency stop is engaged for atleast 3 seconds deletes the mission queue and checks the battery level and returns to idle or charger
     if state_text == "EmergencyStop":
-    	requests.delete(host + 'mission_queue', headers = headers)
+        requests.delete(host + 'mission_queue', headers = headers)
         returnToIdle()
     
     # if mir is paused(state-id #4), unpause MiR(state-id #3)
     if state_id == 4:
-    	x = requests.put(host + 'status', json = status_json, headers = headers)
+        x = requests.put(host + 'status', json = status_json, headers = headers)
     	#print(x)
 
     # check to make sure that powerbank doesn't drain MiR batteries while not in charger
@@ -175,7 +175,7 @@ def check_triggers():
 
     #  While not in charger unhook the powerbank charging  
     if not mission_text == "Charging... Waiting for new mission...":
-    	GPIO.output(output_pin, GPIO.LOW)
+        GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
         
     # While mission is running, go to idle screen    
@@ -207,7 +207,7 @@ def check_triggers():
 
     # Check if the current time is past 6 and the function hasn't been called yet
     if current_time.hour > 6 and powerbank_flag:
-    	returnToIdle()
+        returnToIdle()
         powerbank_flag = False
 
     # Check if the current time is between 2 AM and 6 AM
