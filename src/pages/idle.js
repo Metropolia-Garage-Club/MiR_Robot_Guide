@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import axios from "axios";
 
-  
-
-
-
-
-
 function WelcomeScreen() {
   let wave = 0;
   let start = useNavigate();
