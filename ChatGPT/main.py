@@ -58,7 +58,7 @@ class Chatbot:
                     self.say('Minulla ei ole lupaa vastata kysymykseen -> "' + words+'"')
 
             else:
-                print("Onni-Opas: Muista kutsua minua Onni-Oppaaksi jokaisen kysymykssen alussa tai muuten en osaa vastata kysymkseen...")
+                print("Onni-Opas: Muista kutsua minua Onni-Oppaaksi jokaisen kysymyksen alussa tai muuten en osaa vastata kysymkseen...")
 
         except sr.UnknownValueError:
             print("Admin: OnniTulkki_11928.exe ei käynnisty. Esitä kysymys uudestaan.\n")
