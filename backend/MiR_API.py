@@ -15,6 +15,7 @@ status_check = time.time()
 log_file_path = "activity_log.txt"
 is_force_charging = False
 mission_count = 0
+mission_queue_id = None
 
 status_json = {"state_id": 3} #json-object used to unpause MiR
 error_json = {"clear_error": True}
@@ -87,15 +88,23 @@ def saveFeedbackData():
     
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
-    room_num = int(request.args.get('room_num'))
-    mission_id = {"mission_id": missions[room_num]} #Mission guid here
-    print("mission_id",mission_id)
+    data = json.loads(get_status())
+    mission_queue_id = data.get("mission_queue_id")
+    mission_text = data.get("mission_text")
 
-    post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
-    #post_mission = requests.delete(host + 'mission_queue', headers = headers)
-    updateLog("missions_posted")
-    return jsonify ({"status": str(post_mission)})
-    #return "mission posted"
+    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission...":
+        room_num = int(request.args.get('room_num'))
+        mission_id = {"mission_id": missions[room_num]} #Mission guid here
+        print("mission_id",mission_id)
+
+        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+        #post_mission = requests.delete(host + 'mission_queue', headers = headers)
+        updateLog("missions_posted")
+        return jsonify ({"status": str(post_mission)})
+        #return "mission posted"
+
+    else:
+        return jsonify({"status": "Mission already in queue"})
 
 @mir_api.route("/MiR_api",methods=['GET'])
 def get_missioncomplete():
@@ -195,7 +204,7 @@ def check_triggers():
             curr_value = 0
 
     # if battery is under 15% and not already in charger, start charging
-    if battery_rounded < 15 and not is_force_charging:
+    if battery_rounded < 10 and not is_force_charging:
         charge_powerbank()
         is_force_charging = True
     else:
