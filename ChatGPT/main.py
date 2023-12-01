@@ -1,6 +1,9 @@
 import speech_recognition as sr
 import pyttsx3
-import ChatGPT as cb
+import voice as vc
+
+from flask import Flask, jsonify, request
+
 class Chatbot:
 
     def __init__(self):
@@ -14,14 +17,42 @@ class Chatbot:
     def _callback(self, recognizer, audio):
         try:
             words = recognizer.recognize_google(audio, language="fi-FI").lower()
-            print("Asiakas: "+words+"\n")
+            print(">>>Asiakas: "+words+"\n")
             if "onni opas" in words:
                 if "hei" in words:
                     self.say("Hei olen Onni-Opas kuinka voin auttaa?")
 
-                elif "mitä" in words or "milloin" in words or "mitkä" in words:
-                    vastaus= cb.chatbot(words)
-                    self.say(vastaus+"\n")
+                #Paikat
+                elif "vie" in words or "mitkä" in words or "missä" in words:
+                    if "kirjasto" in words :
+                        print("->Lähdetään kirjastoon")
+                        vastaus= vc.route("0")
+                        self.say(vastaus)
+                    #WC    
+                    elif "wc" in words:
+                        print("->Lähdetään WC")
+                        vastaus= vc.route(1)
+                        self.say(vastaus)
+                    #auditorio
+                    elif "auditorio" in words:
+                        print("->Lähdetään Auditorio")
+                        vastaus= vc.route(2)
+                        self.say(vastaus)
+                    #Kahvila
+                    elif "kahvila" in words:
+                        print("->Lähdetään kahvilaan")
+                        vastaus= vc.route(3)
+                        self.say(vastaus)  
+                     #auditorio
+                    elif "hissi" in words:
+                        print("->Lähdetään hisseille")
+                        vastaus= vc.route(4)
+                        self.say(vastaus)         
+                     #auditorio
+                    elif "ruokala" in words:
+                        print("->Lähdetään ruokalaan")
+                        vastaus= vc.route(5)
+                        self.say(vastaus)                                   
 
                 else:
                     self.say('Minulla ei ole lupaa vastata kysymykseen -> "' + words+'"')
@@ -57,8 +88,8 @@ class Chatbot:
         self.stop_listening()
 
     def say(self, msg):
-        print("Onni-opas: " + msg)
-        self.engine.say(msg)
+        print("Onni-opas: " + str(msg))
+        #self.engine.say(msg)
 
 pop = Chatbot()
 

@@ -6,3 +6,8 @@ PyAudio
 openai
 pandas
 numpy
+
+käytä 3.10 pythonia niin saa pyaudion toimimaan
+
+sudo apt-get install --reinstall alsa-base alsa-utils
+sudo apt-get install flac
