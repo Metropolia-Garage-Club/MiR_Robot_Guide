@@ -66,7 +66,7 @@ class Chatbot:
 
     def say(self, msg):
         print(f"Onni-opas: {msg}")
-        # self.engine.say(msg)
+        # self.engine.say(msg) #Tuon avamalla saa puheen takaisin
 
 pop = Chatbot()
 pop.start()
