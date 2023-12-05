@@ -89,7 +89,7 @@ def saveFeedbackData():
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
 
-    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag:
+    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag and not is_force_charging:
         data = json.loads(get_status())
         mission_queue_id = data.get("mission_queue_id")
         mission_text = data.get("mission_text")
@@ -247,7 +247,7 @@ def check_triggers():
 
     # Check if the current time is between 2 AM and 6 AM
     #if 1 <= current_time.hour <= 5 and not powerbank_flag:
-    if current_time.hour > 9 or current_time.hour <= 6 and not powerbank_flag:
+    if current_time.hour > 21 or current_time.hour <= 6 and not powerbank_flag:
         powerbank_flag = True
         charge_powerbank()
         
