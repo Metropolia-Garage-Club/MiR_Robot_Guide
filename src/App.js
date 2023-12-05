@@ -11,7 +11,7 @@ export default function App() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      await isGoHome(); //3 seconds
+      await isGoHome(); //10 seconds
       if (goHome) {
         //const timeout1 = setTimeout(idleWarning, 7000);
         const timeout2 = setTimeout(idleTimeout2, 10000); //60000 = 1 min, 10000 = 10 seconds
@@ -20,7 +20,7 @@ export default function App() {
           clearTimeout(timeout2);
       }
     }
-  }, 3000);
+  }, 10000);
   return  () => clearInterval(interval);
 }, [goHome]);
   
@@ -139,7 +139,7 @@ export default function App() {
           onMouseOut={() => setSelected(undefined)}
 		      onClick={() => {
             clickRoom(4);
-            //toKirjasto();
+            toKirjasto();
           }}
           className={`room-link ${selected === "kirjasto" ? "active" : ""}`}
         >
