@@ -88,20 +88,20 @@ def saveFeedbackData():
     
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
-    data = json.loads(get_status())
-    mission_queue_id = data.get("mission_queue_id")
-    mission_text = data.get("mission_text")
 
     if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag:
-        room_num = int(request.args.get('room_num'))
-        mission_id = {"mission_id": missions[room_num]} #Mission guid here
-        print("mission_id",mission_id)
-
-        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
-        #post_mission = requests.delete(host + 'mission_queue', headers = headers)
-        updateLog("missions_posted")
-        return jsonify ({"status": str(post_mission)})
-        #return "mission posted"
+    
+    	data = json.loads(get_status())
+    	mission_queue_id = data.get("mission_queue_id")
+    	mission_text = data.get("mission_text")
+    	room_num = int(request.args.get('room_num'))
+    	mission_id = {"mission_id": missions[room_num]} #Mission guid here
+    	print("mission_id",mission_id)
+    	post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
+    	updateLog("missions_posted")
+    	return jsonify ({"status": str(post_mission)})
+    	#return "mission posted"
 
     else:
         return jsonify({"status": "Mission already in queue"})
@@ -153,13 +153,17 @@ def check_triggers():
     global mission_count
     global status_json
     
+    
+    
     current_time = datetime.datetime.now()
-    #print(current_time.hour)
+    
     triggers = [False, False]   # triggers[0] = True for idle screen / triggers[1] = not used.
     if time.time() - status_check >= 1: #send a new API call to MiR every 3 seconds.
         data = json.loads(get_status())
         status_check = time.time()
-
+        
+    
+    
     mission_text = data.get("mission_text")
     state_text = data.get("state_text")
     battery = data.get("battery_percentage")
@@ -168,11 +172,19 @@ def check_triggers():
     state_id = int(data.get("state_id"))
     #print(state_id)
     
+    
+    print("Powerbank flag is " + str(powerbank_flag))
+    print("Current relay value is " + str(curr_value))
+    print("Current hour is " + str(current_time.hour))
+    print("Current battery is " + str(battery_rounded))
+    print("is_force_charging is " + str(is_force_charging)
+    
+    
     #if emergency stop is engaged for atleast 3 seconds deletes the mission queue and checks the battery level and returns to idle or charger
     if state_text == "EmergencyStop":
-        requests.delete(host + 'mission_queue', headers = headers)
-        #time.sleep(50)
-        returnToIdle()
+    	requests.delete(host + 'mission_queue', headers = headers)
+    	#time.sleep(50)
+    	returnToIdle()
         
     if state_text == "Error":
     	requests.delete(host + 'mission_queue', headers = headers)
@@ -214,9 +226,14 @@ def check_triggers():
             curr_value = 0
 
     # if battery is under 10% and not already in charger, start charging
-    if battery_rounded < 10 and not is_force_charging:
+    if battery_rounded < 48 and not is_force_charging:
         charge_powerbank()
         is_force_charging = True
+        
+    if is_force_charging:
+    	
+    	if battery_rounded >49:
+    		is_force_charging = False
     
 
     # if ready for new mission go to idle screen
@@ -224,13 +241,13 @@ def check_triggers():
         triggers[0] = True
 
     # Check if the current time is past 6 and the function hasn't been called yet
-    if current_time.hour > 13 and powerbank_flag:
+    if current_time.hour > 6 and powerbank_flag:
         returnToIdle()
         powerbank_flag = False
 
     # Check if the current time is between 2 AM and 6 AM
     #if 1 <= current_time.hour <= 5 and not powerbank_flag:
-    if current_time.hour > 10 or current_time.hour <= 12 and not powerbank_flag:
+    if current_time.hour > 9 or current_time.hour <= 6 and not powerbank_flag:
         powerbank_flag = True
         charge_powerbank()
         
