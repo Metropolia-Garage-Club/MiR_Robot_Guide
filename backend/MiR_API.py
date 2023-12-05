@@ -90,17 +90,16 @@ def saveFeedbackData():
 def post_missions():
 
     if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag:
-    
-    	data = json.loads(get_status())
-    	mission_queue_id = data.get("mission_queue_id")
-    	mission_text = data.get("mission_text")
-    	room_num = int(request.args.get('room_num'))
-    	mission_id = {"mission_id": missions[room_num]} #Mission guid here
-    	print("mission_id",mission_id)
-    	post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+        data = json.loads(get_status())
+        mission_queue_id = data.get("mission_queue_id")
+        mission_text = data.get("mission_text")
+        room_num = int(request.args.get('room_num'))
+        mission_id = {"mission_id": missions[room_num]} #Mission guid here
+        print("mission_id",mission_id)
+        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
     	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
-    	updateLog("missions_posted")
-    	return jsonify ({"status": str(post_mission)})
+        updateLog("missions_posted")
+        return jsonify ({"status": str(post_mission)})
     	#return "mission posted"
 
     else:
@@ -177,20 +176,21 @@ def check_triggers():
     print("Current relay value is " + str(curr_value))
     print("Current hour is " + str(current_time.hour))
     print("Current battery is " + str(battery_rounded))
-    print("is_force_charging is " + str(is_force_charging)
+    print("is_force_charging is " + str(is_force_charging))
+          
     
     
     #if emergency stop is engaged for atleast 3 seconds deletes the mission queue and checks the battery level and returns to idle or charger
     if state_text == "EmergencyStop":
-    	requests.delete(host + 'mission_queue', headers = headers)
+        requests.delete(host + 'mission_queue', headers = headers)
     	#time.sleep(50)
-    	returnToIdle()
+        returnToIdle()
         
     if state_text == "Error":
-    	requests.delete(host + 'mission_queue', headers = headers)
-    	#time.sleep(50)
-    	requests.put(host + 'status', json = error_json, headers = headers)
-    	returnToIdle()
+        requests.delete(host + 'mission_queue', headers = headers)
+    	
+        requests.put(host + 'status', json = error_json, headers = headers)
+        returnToIdle()
     
     # if mir is paused(state-id #4), unpause MiR(state-id #3)
     if state_id == 4:
@@ -233,7 +233,7 @@ def check_triggers():
     if is_force_charging:
     	
     	if battery_rounded >49:
-    		is_force_charging = False
+            is_force_charging = False
     
 
     # if ready for new mission go to idle screen
