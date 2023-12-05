@@ -12,12 +12,18 @@ import os
 import requests, json
 from flask import Blueprint, request, jsonify
 import datetime
+import time
 
-#pp = pprint.PrettyPrinter(indent=4)
 
-# Pin Definitions
 output_pin = 18  # BCM pin 18, BOARD pin 12
+powerbank_flag = False # Global variable to track function calls
+status_check = time.time()
 log_file_path = "activity_log.txt"
+is_force_charging = False
+mission_count = 0
+
+status_json = {"state_id": 3} #json-object used to unpause MiR
+error_json = {"clear_error": True}
 
 
 # Pin Setup:
@@ -210,12 +216,12 @@ def check_triggers():
 
     # check to make sure that powerbank doesn't drain MiR batteries while not in charger
     if not powerbank_flag and curr_value == 1:
-        GPIO.output(output_pin, GPIO.LOW)
+        #GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
 
     #  While not in charger unhook the powerbank charging  
     if not mission_text == "Charging... Waiting for new mission...":
-        GPIO.output(output_pin, GPIO.LOW)
+        #GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
         
     # While mission is running, go to idle screen    
@@ -229,11 +235,11 @@ def check_triggers():
         triggers[0] = True
 
         if powerbank_flag:
-            GPIO.output(output_pin, GPIO.HIGH)
+            #GPIO.output(output_pin, GPIO.HIGH)
             curr_value = 1
     
         else: 
-            GPIO.output(output_pin, GPIO.LOW)
+            #GPIO.output(output_pin, GPIO.LOW)
             curr_value = 0
 
     # if battery is under 10% and not already in charger, start charging
