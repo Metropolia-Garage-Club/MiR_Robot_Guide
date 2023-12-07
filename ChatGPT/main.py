@@ -5,6 +5,7 @@ from gtts import gTTS
 import os
 import playsound
 import chatGPT
+import requests
 
 from pydub import AudioSegment
 from pydub.playback import play
@@ -45,6 +46,24 @@ class Chatbot:
         except sr.RequestError as e:
             print(f"Could not request results from Google Speech Recognition service; {e}")
 
+    def communicate_with_mir_api(self, room_num):
+        try:
+            # Make a request to the MiR API
+            api_url = "http://localhost:8000/MiR_api"  # Update the URL based on your actual API endpoint
+            payload = {"room_num": room_num}
+            response = requests.post(api_url, json=payload)
+
+            # Check the response status and handle accordingly
+            if response.status_code == 200:
+                result = response.json()
+                return {"success": True, "result": result}
+            else:
+                return {"success": False, "error": f"MiR API request failed with status code {response.status_code}"}
+
+        except Exception as e:
+            # Handle exceptions appropriately
+            return {"success": False, "error": str(e)}
+
     def handle_keyword(self, words):
         try:
             if any(keyword in words for keyword in self.ROUTE_TRIGGERS):
@@ -55,6 +74,7 @@ class Chatbot:
                 if location:
                     print(f"-> Paikka jonne sinut johdatan: {location}")
                     vastaus = vc.route(self.LOCATIONS[location])
+                    result = self.communicate_with_mir_api(self.LOCATIONS[location])
                     self.say("Opastan sinut paikkaan: "+str(location)+". Seuraa minua")
             elif any(keyword in words for keyword in self.GPT_KEYWORD):
                 question = next((loc for loc in self.GPT_KEYWORD if loc in words), None)

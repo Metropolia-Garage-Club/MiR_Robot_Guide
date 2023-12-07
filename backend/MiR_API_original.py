@@ -1,6 +1,6 @@
 #import pprint
 import os
-#import Jetson.GPIO as GPIO
+import Jetson.GPIO as GPIO
 import requests, json
 from flask import Blueprint, request, jsonify
 import datetime
@@ -22,9 +22,9 @@ error_json = {"clear_error": True}
 
 
 # Pin Setup:
-#GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
+GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
 # set pin as an output pin with optional initial state of HIGH
-#GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
 
 curr_value = 0
 
@@ -125,24 +125,9 @@ def get_missioncomplete():
     return response_body
 
 # returns the current task MiR is executing  
-class MockResponse:
-    def __init__(self, text):
-        self.text = text
-
-  
 def get_status():
-    #status = requests.get(host + 'status', headers = headers)
-    #print("status",status)
-    api_response = {
-        "battery_percentage": 75,
-        "mission_text": "Charging... Waiting for new mission...",
-        "state_text": "Executing"
-        # Add other fields as needed
-    }
-
-    status_string = json.dumps(api_response)
-    status = MockResponse(status_string)
-
+    status = requests.get(host + 'status', headers = headers)
+    print("status",status)
     return status.text
    
 data = json.loads(get_status())
@@ -151,13 +136,13 @@ data = json.loads(get_status())
 def charge_powerbank():
     mission_id = {"mission_id": missions[7]} #Mission guid here
     print("mission_id",mission_id)
-    #requests.delete(host + 'mission_queue', headers = headers)
-    #requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    requests.delete(host + 'mission_queue', headers = headers)
+    requests.post(host + 'mission_queue', json = mission_id, headers = headers)
 
 def returnToIdle():
     mission_id = {"mission_id": missions[8]} #Mission guid here
     print("mission_id",mission_id)
-    #requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    requests.post(host + 'mission_queue', json = mission_id, headers = headers)
 
 def check_triggers():
     #Define global variables.
@@ -210,29 +195,29 @@ def check_triggers():
     
     #if emergency stop is engaged for atleast 3 seconds deletes the mission queue and checks the battery level and returns to idle or charger
     if state_text == "EmergencyStop":
-        #requests.delete(host + 'mission_queue', headers = headers)
+        requests.delete(host + 'mission_queue', headers = headers)
     	#time.sleep(50)
         returnToIdle()
         
     if state_text == "Error":
-        #requests.delete(host + 'mission_queue', headers = headers)
+        requests.delete(host + 'mission_queue', headers = headers)
     	
-        #requests.put(host + 'status', json = error_json, headers = headers)
+        requests.put(host + 'status', json = error_json, headers = headers)
         returnToIdle()
     
     # if mir is paused(state-id #4), unpause MiR(state-id #3)
     if state_id == 4:
-        #requests.put(host + 'status', json = status_json, headers = headers)
-        print(state_id)
+        requests.put(host + 'status', json = status_json, headers = headers)
+    	#print(x)
 
     # check to make sure that powerbank doesn't drain MiR batteries while not in charger
     if not powerbank_flag and curr_value == 1:
-        #GPIO.output(output_pin, GPIO.LOW)
+        GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
 
     #  While not in charger unhook the powerbank charging  
     if not mission_text == "Charging... Waiting for new mission...":
-        #GPIO.output(output_pin, GPIO.LOW)
+        GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
         
     # While mission is running, go to idle screen    
@@ -247,11 +232,11 @@ def check_triggers():
 
         if powerbank_flag:
             triggers[2] = True
-            #GPIO.output(output_pin, GPIO.HIGH)
+            GPIO.output(output_pin, GPIO.HIGH)
             curr_value = 1
     
         else: 
-            #GPIO.output(output_pin, GPIO.LOW)
+            GPIO.output(output_pin, GPIO.LOW)
             curr_value = 0
 
     # if battery is under 10% and not already in charger, start charging
