@@ -44,8 +44,8 @@ class Chatgpt:
         response =openai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are Finnish speaking helpful assistant named Onni-opas that answers sarcastically questions only using the information provided in the kurssitiedot below, and if the answer is not contained within the kurssitiedot say 'En osaa vastata kysymykseen'."},
-                {"role": "system", "content": "Kurssitiedot: \n\n" + self.readfile()},
+                {"role": "system", "content": "You are Finnish speaking helpful assistant named Onni-opas that answers happily to questions only using the information provided in the 'onni tietokanta' below, and if the answer is not contained within the Onnibase say 'En osaa vastata kysymykseen'."},
+                {"role": "system", "content": "onni tietokanta: \n\n" + self.readfile()},
             ] + [
                 {"role": "user", "content": q} for q in self.query_history
             ] + [
@@ -59,7 +59,7 @@ class Chatgpt:
         query_response = response.choices[0].message.content
 
         # Lisätään uusi vastaus historiaan
-        self.response_history.append(query_response)
+        self.response_history.append(str(query_response))
 
         return query_response
 
