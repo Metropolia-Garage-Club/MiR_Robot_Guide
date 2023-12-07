@@ -6,3 +6,49 @@ PyAudio
 openai
 pandas
 numpy
+
+käytä 3.10 pythonia niin saa pyaudion toimimaan
+
+pyenv asennus:
+sudo apt-get update
+sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git
+
+curl https://pyenv.run | bash
+
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv virtualenv-init -)"
+
+
+
+pythonin asennus:
+pyenv install 3.10.0
+pyenv global 3.10.0
+
+Äänikortin liitännäisten asennus:
+sudo apt-get update
+sudo apt-get install --reinstall alsa-base alsa-utils
+sudo apt-get install flac
+
+playsound:
+pip install --upgrade setuptools wheel
+pip install git+https://github.com/TaylorSMarks/playsound.git
+sudo apt-get install libcairo2-dev
+sudo apt-get install libgirepository1.0-dev
+pip install pygobject
+
+sudo apt-get install pavucontrol (pavucontrol komento)
+
+
+bluetooth:
+3.Enter these commands to update the apt-get package list and install the pulse audio package:
+
+$ sudo apt-get update
+
+$ sudo apt-get install pulseaudio-module-bluetooth
+
+4.Enter this command to reboot the Jetson device:
+
+$ sudo reboot
