@@ -41,6 +41,8 @@ pip install pygobject
 
 sudo apt-get install pavucontrol (pavucontrol komento)
 
+sudo apt-get install ffmpeg
+
 
 bluetooth:
 3.Enter these commands to update the apt-get package list and install the pulse audio package:

@@ -6,12 +6,16 @@ import os
 import playsound
 import chatGPT
 
+from pydub import AudioSegment
+from pydub.playback import play
+
 class Chatbot:
-    KEYWORD = "onni opas"
+    KEYWORD = ["onni", "onni opas", "robotti", "palvelija", "orja"]
     LOCATIONS = {"kirjasto": 0, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "ruokala": 5}
-    ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti"]
+    ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti", "mennään"]
     GREETINGS=["hei", "moi", "moikka", "tere", "terve"]
-    GPT_KEYWORD=["kysymys", "kyssäri", "tiedätkö"]
+    GPT_KEYWORD=["kysymys", "kyssäri", "tiedätkö", "kerro", "mitä","kuinka","mihin","mikä", "haluan","voitko"
+                 ,"voisitko","viitsitkö","viitsisitkö","kehtaatko","kuka","oletko","onko","haluatko","haluaisitko"]
 
     def __init__(self):
         self.initialize_components()
@@ -29,10 +33,10 @@ class Chatbot:
         try:
             words = recognizer.recognize_google(audio, language="fi-FI").lower()
             print(f">>>Asiakas: {words}\n")
-            if self.KEYWORD in words:
+            if any(keywords in words for keywords in self.KEYWORD):
                 self.handle_keyword(words)
             elif any(greetings in words for greetings in self.GREETINGS):
-                print("Hei olen Onni-Opas, kuinka voin auttaa?")
+                self.say("Hei olen Onni-Opas, kuinka voin auttaa?")
             else:
                 print("Onni-Opas: Muista kutsua minua Onni-Oppaaksi kysymyksen alussa.")
 
@@ -52,15 +56,15 @@ class Chatbot:
                     print(f"-> Paikka jonne sinut johdatan: {location}")
                     vastaus = vc.route(self.LOCATIONS[location])
                     self.say("Opastan sinut paikkaan: "+str(location)+". Seuraa minua")
-            if any(keyword in words for keyword in self.GPT_KEYWORD):
+            elif any(keyword in words for keyword in self.GPT_KEYWORD):
                 question = next((loc for loc in self.GPT_KEYWORD if loc in words), None)
                 if question:
-                    print(f"-> Yritän vastata kysymykseen: {words}")
-                    response = self.chatgpt_instance.gpt_query(words) # kysely chat GPT:lle
+                    self.say("Pieni hetki prosessoin pyyntöä...")
+                    response = self.chatgpt_instance.gpt_query(str(words)) # kysely chat GPT:lle
                     self.say(response)
 
             else:
-                self.say(f'Lähdetään matkaan')
+                self.say(f'tuo ei ollut paikka eikä kysymys! joten en voi auttaa sinua.')
         except Exception as e:
             print(f'Virhe käsittelyssä: {e}')
 
@@ -93,11 +97,21 @@ class Chatbot:
             speech = gTTS(msg, lang="fi")
             speech_file = 'speech.mp3'
             speech.save(speech_file)
-            playsound.playsound(speech_file)
+           # playsound.playsound(speech_file)
+
+            # Lataa äänitiedosto pydubin AudioSegment-objektiin
+            sound = AudioSegment.from_mp3(speech_file)
+
+            # Kiihdytä äänentoistoa
+            speeded_sound = sound.speedup(playback_speed=1.2)
+
+            # Toista kiihdytetty äänitiedosto
+            play(speeded_sound)
+
             
         except Exception as e:
             print(f'Error while handling speech: {e}')
-        # self.engine.say(msg) #Tuon avamalla saa puheen takaisin
+            #self.engine.say(speech_file) #Tuon avamalla saa puheen takaisin
 
 pop = Chatbot()
 pop.start()
