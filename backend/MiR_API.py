@@ -89,10 +89,12 @@ def saveFeedbackData():
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
 
+    data = json.loads(get_status())
+    mission_queue_id = data.get("mission_queue_id")
+    mission_text = data.get("mission_text")
+
     if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag and not is_force_charging:
-        data = json.loads(get_status())
-        mission_queue_id = data.get("mission_queue_id")
-        mission_text = data.get("mission_text")
+       
         room_num = int(request.args.get('room_num'))
         mission_id = {"mission_id": missions[room_num]} #Mission guid here
         print("mission_id",mission_id)
@@ -159,7 +161,7 @@ def check_triggers():
     triggers = [False, False, False, False]     # triggers[0] = True for idle screen 
                                                 # triggers[1] = True when current mission is complete.
                                                 # triggers[2] = True when robot is charging and not accepting missions
-                                                # 
+                                                # triggers[3] = True robot is returning to idle position
                                                 #
                                                 #
                                                 #
@@ -229,6 +231,7 @@ def check_triggers():
         triggers[0] = True
 
         if powerbank_flag:
+            triggers[2] = True
             GPIO.output(output_pin, GPIO.HIGH)
             curr_value = 1
     
@@ -261,5 +264,6 @@ def check_triggers():
     if current_time.hour > 21 or current_time.hour <= 6 and not powerbank_flag:
         powerbank_flag = True
         charge_powerbank()
+        
         
     return triggers
