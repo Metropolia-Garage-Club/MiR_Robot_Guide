@@ -5,6 +5,8 @@ import voice as vc
 class Chatbot:
     KEYWORD = "onni opas"
     LOCATIONS = {"kirjasto": 0, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "ruokala": 5}
+    ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti"]
+    GREETINGS=["hei", "moi", "moikka", "tere", "terve"]
 
     def __init__(self):
         self.initialize_components()
@@ -23,6 +25,8 @@ class Chatbot:
             print(f">>>Asiakas: {words}\n")
             if self.KEYWORD in words:
                 self.handle_keyword(words)
+            elif any(greetings in words for greetings in self.GREETINGS):
+                print("Hei olen Onni-Opas, kuinka voin auttaa?")
             else:
                 print("Onni-Opas: Muista kutsua minua Onni-Oppaaksi kysymyksen alussa.")
 
@@ -32,15 +36,17 @@ class Chatbot:
             print(f"Could not request results from Google Speech Recognition service; {e}")
 
     def handle_keyword(self, words):
-        if "hei" in words:
-            self.say("Hei olen Onni-Opas, kuinka voin auttaa?")
-        elif any(location in words for location in self.LOCATIONS):
-            location = next((loc for loc in self.LOCATIONS if loc in words), None)
-            print(f"->Paikka jonne sinut johdatan {location}")
-            vastaus = vc.route(self.LOCATIONS[location])
-            self.say(vastaus)
-        else:
-            self.say(f'Minulla ei ole lupaa vastata kysymykseen -> "{words}"')
+        try:
+            if any(keyword in words for keyword in self.ROUTE_TRIGGERS):
+                location = next((loc for loc in self.LOCATIONS if loc in words), None)
+                if location:
+                    print(f"-> Paikka jonne sinut johdatan: {location}")
+                    vastaus = vc.route(self.LOCATIONS[location])
+                    self.say(vastaus)
+            else:
+                self.say(f'Minulla ei ole lupaa vastata kysymykseen -> "{words}"')
+        except Exception as e:
+            print(f'Virhe käsittelyssä: {e}')
 
     def listen(self):
         print("Admin: Muistin pyyhintä protokolla v0.116...")
