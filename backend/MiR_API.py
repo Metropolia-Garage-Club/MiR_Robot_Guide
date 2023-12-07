@@ -156,7 +156,18 @@ def check_triggers():
     
     current_time = datetime.datetime.now()
     
-    triggers = [False, False]   # triggers[0] = True for idle screen / triggers[1] = not used.
+    triggers = [False, False, False, False]     # triggers[0] = True for idle screen 
+                                                # triggers[1] = True when current mission is complete.
+                                                # triggers[2] = True when robot is charging and not accepting missions
+                                                # 
+                                                #
+                                                #
+                                                #
+                                                #
+
+
+
+
     if time.time() - status_check >= 1: #send a new API call to MiR every 3 seconds.
         data = json.loads(get_status())
         status_check = time.time()
