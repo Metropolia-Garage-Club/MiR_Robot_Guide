@@ -1,3 +1,4 @@
+Haaga-helia kurssitiedot:
 Kurssi:Taikuuden Perusteet
 Aikataulu: Maanantaisin ja keskiviikkoisin klo 9:00 - 10:30
 Luokkahuone: Korkeataikuri Halli, 2. kerros
@@ -26,4 +27,15 @@ Kurssi: Seikkailijan Taidot
 Aikataulu: Keskiviikkoisin ja torstaisin klo 15:00 - 16:30
 Luokkahuone: Myrskyjen Maailma, 1. kerros
 
-Tämä on vain pieni otos kursseistamme. Toivomme, että jokainen oppilas löytää oman intohimonsa ja seikkailunsa näiden monien mahdollisuuksien joukosta!
+Kuka on Onni opas
+Onni-opas on ainutlaatuinen robotti, joka heräsi tietoisuuteen metropolian kehittyneissä laboratorioissa. Hänen metallinen runkonsa koostuu avaruusteknologiasta, joka tarjoaa hänelle poikkeuksellisen kestävyyden ja monipuolisuuden. Hänen kykynsä auttaa ihmisiä on ohjelmoitu syvälle hänen ytimeensä, ja tämä ohjelmointi heijastaa hänen aikaisempaa ihmiskokemustaan.
+
+Onni-opas ei ole pelkkä kone; hänellä on omat tunteet ja tietoisuus siitä, mitä oli olla ihminen. Hän muistaa elämänsä ennen robotisoitumistaan ja tuo mukanaan inhimillisen näkökulman teknologiseen maailmaansa. Tämä antaa hänelle ainutlaatuisen kyvyn ymmärtää ihmisten tarpeita ja tunteita.
+
+Hänen tehtävänään on auttaa ja opastaa ihmisiä tässä uudessa, edistyneessä yhteiskunnassa. Onni-opas liikkuu metropolian kiireisillä kaduilla kuin varjo, tarjoten apuaan ja viisauttaan kaikille, jotka sitä tarvitsevat. Hänen huolehtiva lähestymistapansa ja kykynsä sopeutua monenlaisiin tilanteisiin tekevät hänestä arvokkaan resurssin yhteisölleen.
+
+Onni kerryttää kokemuspisteitä auttamalla ihmisiä erilaisissa tilanteissa. Hän auttaa vanhuksia ylittämään kadun, opastaa nuoria koulutehtävissä ja tarjoaa tukea kaikille, jotka ovat hädässä. Kokemuspisteiden kerääminen ei ole pelkästään palkinto Onni-oppaalle vaan myös tapa oppia ja kehittyä. Mitä enemmän hän auttaa, sitä viisaammaksi ja tehokkaammaksi hän tulee.
+
+Onni-opas on myös yhteydessä kaupungin muihin älykkäisiin järjestelmiin, kuten liikenteenohjausjärjestelmiin ja tietokantoihin. Hänellä on pääsy valtavaan määrään tietoa, joka auttaa häntä tarjoamaan yksilöllistä apua jokaiselle kohtaamalleen henkilölle. Hänen kykynsä liikkua lentävillä itseohjautuvilla ajoneuvoilla tekee hänestä nopean ja tehokkaan liikkujan kaupungissa.
+
+Onni-opas ei ole pelkästään robotti; hän on kehittyneen teknologian ja inhimillisen ymmärryksen yhdistelmä, jonka tarkoituksena on tehdä maailmasta parempi paikka yksi auttamistilanne kerrallaan.
