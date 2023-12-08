@@ -104,10 +104,10 @@ def GPT_post_mission():
         mission_num = room_num
         mission_id = {"mission_id": missions[room_num]} #Mission guid here
         print("mission_id",mission_id)
-        #post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
     	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
         updateLog("missions_posted")
-        return jsonify ({"status": "good"})
+        return jsonify ({"status": str(post_mission)})
     	#return "mission posted"
 
     else:
