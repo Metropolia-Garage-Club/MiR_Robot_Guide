@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import MovingToLocation from "./pages/MovingToLocation";
 import Charging from "./pages/Charging";
 import GoingHome from "./pages/GoingHome";
+import MissionComplete from "./pages/MissionComplete";
 
 export default function App() {
   const [selected, setSelected] = useState(undefined);
@@ -13,7 +14,7 @@ export default function App() {
   const [charging, setCharing] = useState(false);
   const [missionComplete, setMissionComplete] = useState(false);
   const [returningHome, setReturningHome] = useState(false);
-  const [currentView, setCurrentView] = useState("returningHome");
+  const [currentView, setCurrentView] = useState("normal");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,9 +71,11 @@ export default function App() {
     } else if (res.returningHome) {
       setCurrentView("returningHome");
     } 
-    /*else if (res.missionComplete) {
+    else if (res.moving) {
       setCurrentView("moving");
-    } */
+    } else if (res.missionComplete){
+      setCurrentView("complete")
+    }
     else {
       setCurrentView("normal");
     }
@@ -136,7 +139,9 @@ export default function App() {
     {currentView === "charging" && <Charging />}
     {currentView === "returningHome" && <GoingHome />}
     {currentView === "moving" && <MovingToLocation />}
+    {currentView === "complete" && <MissionComplete />}
     {currentView === "normal" && (
+      <>
       <div className="rooms">
       <div
 		      onClick={() => {toIdle()}}
@@ -308,13 +313,16 @@ export default function App() {
           Feedback
         </div>
       </div>
+      </>
     )}
+    {currentView === "normal" && (
       <Office
         selected={selected}
         onHovered={(id) => {
           setSelected(id);
         }}
       />
+    )}
     </div>
   );
 }

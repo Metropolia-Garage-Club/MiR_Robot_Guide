@@ -5,7 +5,7 @@ function MovingToLocation() {
   return (
     <div className="moving-to-location">
       <div className="moving-icon">🤖</div>
-      <h2>Moving to {destination}...</h2>
+      <h2>Moving to destination...</h2>
       <p>Please wait, I am heading to the destination.</p>
     </div>
   );
