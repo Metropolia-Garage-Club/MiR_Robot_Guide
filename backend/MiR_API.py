@@ -120,10 +120,10 @@ def post_missions():
         room_num = int(request.args.get('room_num'))
         mission_id = {"mission_id": missions[room_num]} #Mission guid here
         print("mission_id",mission_id)
-        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+        #post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
     	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
         updateLog("missions_posted")
-        return jsonify ({"status": str(post_mission)})
+        return jsonify ({"status": str('status_working')})
     	#return "mission posted"
 
     else:
@@ -133,13 +133,14 @@ def post_missions():
 def get_missioncomplete():
     #check mission
     triggers = check_triggers()
-    startIdle, missionComplete, charging, returningHome = triggers 
+    startIdle, missionComplete, charging, returningHome, moving = triggers 
 
     response_body = {
         "startIdle": startIdle,
         "missionComplete": missionComplete,
         "charging": charging,
-        "returningHome": returningHome
+        "returningHome": returningHome,
+        "moving": moving
     }
 
     return response_body
@@ -194,11 +195,11 @@ def check_triggers():
     
     current_time = datetime.datetime.now()
     
-    triggers = [False, False, False, False]     # triggers[0] = True for idle screen 
+    triggers = [False, True, False, False, False]     # triggers[0] = True for idle screen 
                                                 # triggers[1] = True when current mission is complete.
                                                 # triggers[2] = True when robot is charging and not accepting missions
                                                 # triggers[3] = True robot is returning to idle position
-                                                #
+                                                # 
                                                 #
                                                 #
                                                 #
