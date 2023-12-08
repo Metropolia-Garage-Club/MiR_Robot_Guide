@@ -1,11 +1,12 @@
 import speech_recognition as sr
 import pyttsx3
-import voice as vc
+#import voice as vc
 from gtts import gTTS
 import os
 import playsound
 import chatGPT
 import requests
+
 
 from pydub import AudioSegment
 from pydub.playback import play
@@ -13,7 +14,7 @@ from pydub.playback import play
 class Chatbot:
     KEYWORD = ["onni", "onni opas", "robotti", "palvelija", "orja"]
     LOCATIONS = {"kirjasto": 0, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "ruokala": 5}
-    ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti", "mennään"]
+    ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti", "mennään", "opasta"]
     GREETINGS=["hei", "moi", "moikka", "tere", "terve"]
     GPT_KEYWORD=["kysymys", "kyssäri", "tiedätkö", "kerro", "mitä","kuinka","mihin","mikä", "haluan","voitko"
                  ,"voisitko","viitsitkö","viitsisitkö","kehtaatko","kuka","oletko","onko","haluatko","haluaisitko"]
@@ -49,8 +50,11 @@ class Chatbot:
     def communicate_with_mir_api(self, room_num):
         try:
             # Make a request to the MiR API
-            api_url = "http://localhost:8000/MiR_api"  # Update the URL based on your actual API endpoint
-            payload = {"room_num": room_num}
+            print("sending request")
+            print(room_num)
+            api_url = "http://127.0.0.1:5000/GPT"  # Update the URL based on your actual API endpoint
+            payload = {'room_num': room_num}
+            print(payload)
             response = requests.post(api_url, json=payload)
 
             # Check the response status and handle accordingly
@@ -73,8 +77,10 @@ class Chatbot:
                 #Ensimmäinen osa chatgpt
                 if location:
                     print(f"-> Paikka jonne sinut johdatan: {location}")
-                    vastaus = vc.route(self.LOCATIONS[location])
-                    result = self.communicate_with_mir_api(self.LOCATIONS[location])
+                    #vastaus = vc.route(self.LOCATIONS[location])
+                    print(str(self.LOCATIONS[location]))
+                    result = self.communicate_with_mir_api(str(self.LOCATIONS[location]))
+                    print(result)
                     self.say("Opastan sinut paikkaan: "+str(location)+". Seuraa minua")
             elif any(keyword in words for keyword in self.GPT_KEYWORD):
                 question = next((loc for loc in self.GPT_KEYWORD if loc in words), None)

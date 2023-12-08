@@ -1,10 +1,11 @@
 import openai
 import os
+#from openapyenvi import OpenAI
 
 class Chatgpt:
     API_KEY="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"
 
-    from openai import OpenAI
+    
 
 
     def __init__(self):
@@ -13,7 +14,7 @@ class Chatgpt:
         self.query_history = []      # Säilytetään viisi viimeisintä kysymystä tässä
         self.response_history = []
 
-    def readfile(self, file_path="ChatGPT/CourseInfo.txt"):
+    def readfile(self, file_path="ChatGPT/GPT_data.txt"):
         try:
             # Hae nykyinen työhakemisto
             current_directory = os.getcwd()

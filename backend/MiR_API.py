@@ -85,6 +85,28 @@ def saveFeedbackData():
     feedback_data = str(request.args.get('selectedFace'))
     updateLog(feedback_data)
     return jsonify({"status": "success"})
+
+@mir_api.route("/GPT", methods=['POST'])
+def GPT_post_mission():
+    data = json.loads(get_status())
+    mission_queue_id = data.get("mission_queue_id")
+    mission_text = data.get("mission_text")
+
+    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag and not is_force_charging:
+        y = json.loads(request.data)
+        print(y)
+        room_num = int(y.get('room_num'))
+        print(room_num)
+        mission_id = {"mission_id": missions[room_num]} #Mission guid here
+        print("mission_id",mission_id)
+        #post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
+        updateLog("missions_posted")
+        return jsonify ({"status": "good"})
+    	#return "mission posted"
+
+    else:
+        return jsonify({"status": "Mission already in queue"})
     
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
@@ -122,6 +144,11 @@ def get_missioncomplete():
 
     return response_body
 
+class MockResponse:
+    def __init__(self, text):
+        self.text = text
+
+
 # returns the current task MiR is executing  
 def get_status():
     #status = requests.get(host + 'status', headers = headers)
@@ -129,7 +156,8 @@ def get_status():
     api_response = {
         "battery_percentage": 75,
         "mission_text": "Charging... Waiting for new mission...",
-        "state_text": "Executing"
+        "state_text": "Executing",
+        "state_id": 3
         # Add other fields as needed
     }
 
