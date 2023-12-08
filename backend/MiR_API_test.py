@@ -1,6 +1,6 @@
 #import pprint
 import os
-import Jetson.GPIO as GPIO
+#import Jetson.GPIO as GPIO
 import requests, json
 from flask import Blueprint, request, jsonify
 import datetime
@@ -22,9 +22,9 @@ error_json = {"clear_error": True}
 
 
 # Pin Setup:
-GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
+#GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
 # set pin as an output pin with optional initial state of HIGH
-GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
+#GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
 
 curr_value = 0
 
@@ -120,10 +120,10 @@ def post_missions():
         room_num = int(request.args.get('room_num'))
         mission_id = {"mission_id": missions[room_num]} #Mission guid here
         print("mission_id",mission_id)
-        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+        #post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
     	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
         updateLog("missions_posted")
-        return jsonify ({"status": str(post_mission)})
+        return jsonify ({"status": str('status_working')})
     	#return "mission posted"
 
     else:
@@ -133,21 +133,38 @@ def post_missions():
 def get_missioncomplete():
     #check mission
     triggers = check_triggers()
-    startIdle, missionComplete, charging, returningHome = triggers 
+    startIdle, missionComplete, charging, returningHome, moving = triggers 
 
     response_body = {
         "startIdle": startIdle,
         "missionComplete": missionComplete,
         "charging": charging,
-        "returningHome": returningHome
+        "returningHome": returningHome,
+        "moving": moving
     }
 
     return response_body
 
+class MockResponse:
+    def __init__(self, text):
+        self.text = text
+
+
 # returns the current task MiR is executing  
 def get_status():
-    status = requests.get(host + 'status', headers = headers)
-    print("status",status)
+    #status = requests.get(host + 'status', headers = headers)
+    #print("status",status)
+    api_response = {
+        "battery_percentage": 75,
+        "mission_text": "Charging... Waiting for new mission...",
+        "state_text": "Executing",
+        "state_id": 3
+        # Add other fields as needed
+    }
+
+    status_string = json.dumps(api_response)
+    status = MockResponse(status_string)
+
     return status.text
    
 data = json.loads(get_status())
@@ -156,13 +173,13 @@ data = json.loads(get_status())
 def charge_powerbank():
     mission_id = {"mission_id": missions[7]} #Mission guid here
     print("mission_id",mission_id)
-    requests.delete(host + 'mission_queue', headers = headers)
-    requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    #requests.delete(host + 'mission_queue', headers = headers)
+    #requests.post(host + 'mission_queue', json = mission_id, headers = headers)
 
 def returnToIdle():
     mission_id = {"mission_id": missions[8]} #Mission guid here
     print("mission_id",mission_id)
-    requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    #requests.post(host + 'mission_queue', json = mission_id, headers = headers)
 
 def check_triggers():
     #Define global variables.
@@ -178,11 +195,11 @@ def check_triggers():
     
     current_time = datetime.datetime.now()
     
-    triggers = [False, False, False, False]     # triggers[0] = True for idle screen 
+    triggers = [False, True, False, False, False]     # triggers[0] = True for idle screen 
                                                 # triggers[1] = True when current mission is complete.
                                                 # triggers[2] = True when robot is charging and not accepting missions
                                                 # triggers[3] = True robot is returning to idle position
-                                                #
+                                                # 
                                                 #
                                                 #
                                                 #
@@ -190,7 +207,7 @@ def check_triggers():
 
 
 
-    if time.time() - status_check >= 1: #send a new API call to MiR every 1 seconds.
+    if time.time() - status_check >= 1: #send a new API call to MiR every 3 seconds.
         data = json.loads(get_status())
         status_check = time.time()
         
@@ -215,29 +232,29 @@ def check_triggers():
     
     #if emergency stop is engaged for atleast 3 seconds deletes the mission queue and checks the battery level and returns to idle or charger
     if state_text == "EmergencyStop":
-        requests.delete(host + 'mission_queue', headers = headers)
+        #requests.delete(host + 'mission_queue', headers = headers)
     	#time.sleep(50)
         returnToIdle()
         
     if state_text == "Error":
-        requests.delete(host + 'mission_queue', headers = headers)
+        #requests.delete(host + 'mission_queue', headers = headers)
     	
-        requests.put(host + 'status', json = error_json, headers = headers)
+        #requests.put(host + 'status', json = error_json, headers = headers)
         returnToIdle()
     
     # if mir is paused(state-id #4), unpause MiR(state-id #3)
     if state_id == 4:
-        requests.put(host + 'status', json = status_json, headers = headers)
-    	#print(x)
+        #requests.put(host + 'status', json = status_json, headers = headers)
+        print(state_id)
 
     # check to make sure that powerbank doesn't drain MiR batteries while not in charger
     if not powerbank_flag and curr_value == 1:
-        GPIO.output(output_pin, GPIO.LOW)
+        #GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
 
     #  While not in charger unhook the powerbank charging  
     if not mission_text == "Charging... Waiting for new mission...":
-        GPIO.output(output_pin, GPIO.LOW)
+        #GPIO.output(output_pin, GPIO.LOW)
         curr_value = 0
         
     # While mission is running, go to idle screen    
@@ -252,11 +269,11 @@ def check_triggers():
 
         if powerbank_flag:
             triggers[2] = True
-            GPIO.output(output_pin, GPIO.HIGH)
+            #GPIO.output(output_pin, GPIO.HIGH)
             curr_value = 1
     
         else: 
-            GPIO.output(output_pin, GPIO.LOW)
+            #GPIO.output(output_pin, GPIO.LOW)
             curr_value = 0
 
     # if battery is under 10% and not already in charger, start charging
@@ -266,7 +283,7 @@ def check_triggers():
         
     if is_force_charging:
     	
-    	if battery_rounded >49:
+    	if battery_rounded >25:
             is_force_charging = False
     
 
@@ -275,7 +292,7 @@ def check_triggers():
         triggers[0] = True
 
     # Check if the current time is past 6 and the function hasn't been called yet
-    if current_time.hour > 7 and powerbank_flag:
+    if current_time.hour == 6 and powerbank_flag:
         returnToIdle()
         powerbank_flag = False
 
