@@ -111,16 +111,14 @@ def post_missions():
 def get_missioncomplete():
     #check mission
     triggers = check_triggers()
-    startIdle = triggers[0] #charging starts
+    startIdle, missionComplete, charging, returningHome = triggers 
 
-    if startIdle is True:
-        response_body = {
-            "returning_home": 1
-        }
-    else: 
-        response_body = {
-            "returning_home": 0
-        }
+    response_body = {
+        "startIdle": startIdle,
+        "missionComplete": missionComplete,
+        "charging": charging,
+        "returningHome": returningHome
+    }
 
     return response_body
 
