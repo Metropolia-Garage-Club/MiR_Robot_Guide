@@ -122,6 +122,10 @@ def get_missioncomplete():
 
     return response_body
 
+class MockResponse:
+    def __init__(self, text):   
+        self.text = text
+
 # returns the current task MiR is executing  
 def get_status():
     #status = requests.get(host + 'status', headers = headers)
@@ -166,7 +170,7 @@ def check_triggers():
     
     current_time = datetime.datetime.now()
     
-    triggers = [False, False, False, False]     # triggers[0] = True for idle screen 
+    triggers = [False, False, False, True]     # triggers[0] = True for idle screen 
                                                 # triggers[1] = True when current mission is complete.
                                                 # triggers[2] = True when robot is charging and not accepting missions
                                                 # triggers[3] = True robot is returning to idle position
