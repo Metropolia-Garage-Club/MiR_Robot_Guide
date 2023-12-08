@@ -85,6 +85,28 @@ def saveFeedbackData():
     feedback_data = str(request.args.get('selectedFace'))
     updateLog(feedback_data)
     return jsonify({"status": "success"})
+
+@mir_api.route("/GPT", methods=['POST'])
+def GPT_post_mission():
+    data = json.loads(get_status())
+    mission_queue_id = data.get("mission_queue_id")
+    mission_text = data.get("mission_text")
+
+    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag and not is_force_charging:
+        y = json.loads(request.data)
+        print(y)
+        room_num = int(y.get('room_num'))
+        print(room_num)
+        mission_id = {"mission_id": missions[room_num]} #Mission guid here
+        print("mission_id",mission_id)
+        #post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
+        updateLog("missions_posted")
+        return jsonify ({"status": "good"})
+    	#return "mission posted"
+
+    else:
+        return jsonify({"status": "Mission already in queue"})
     
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
@@ -168,7 +190,7 @@ def check_triggers():
 
 
 
-    if time.time() - status_check >= 1: #send a new API call to MiR every 3 seconds.
+    if time.time() - status_check >= 1: #send a new API call to MiR every 1 seconds.
         data = json.loads(get_status())
         status_check = time.time()
         
@@ -253,7 +275,7 @@ def check_triggers():
         triggers[0] = True
 
     # Check if the current time is past 6 and the function hasn't been called yet
-    if current_time.hour > 6 and powerbank_flag:
+    if current_time.hour > 7 and powerbank_flag:
         returnToIdle()
         powerbank_flag = False
 
