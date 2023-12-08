@@ -6,13 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 export default function App() {
   const [selected, setSelected] = useState(undefined);
-  const [goHome, setGoHome] = useState(0);
+  const [startIdle, setStartIdle] = useState(false);
+  const [charging, setCharing] = useState(false);
+  const [missionComplete, setMissionComplete] = useState(false);
+  const [returningHome, setReturningHome] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(async () => {
       await isGoHome(); //10 seconds
-      if (goHome) {
+      if (startIdle) {
         //const timeout1 = setTimeout(idleWarning, 7000);
         const timeout2 = setTimeout(idleTimeout2, 10000); //60000 = 1 min, 10000 = 10 seconds
         return () => {
@@ -22,7 +25,7 @@ export default function App() {
     }
   }, 10000);
   return  () => clearInterval(interval);
-}, [goHome]);
+}, [startIdle]);
   
   function idleTimeout2() {
     axios({
@@ -54,7 +57,10 @@ export default function App() {
     .then((response) => {
       const res = response.data
       console.log(res)
-      setGoHome(res.returning_home)
+      setStartIdle(res.startIdle)
+      setMissionComplete(res.missionComplete)
+      setCharing(res.charging)
+      setReturningHome(res.returningHome)
     })
     .catch((error) => {
       if (error.response) {
@@ -64,7 +70,7 @@ export default function App() {
         }
     })
 
-    console.log(goHome)
+    console.log(startIdle)
   }
 
   const handleFeedbackClick = () => {

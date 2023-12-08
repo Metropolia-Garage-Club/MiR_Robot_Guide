@@ -111,25 +111,18 @@ def post_missions():
 def get_missioncomplete():
     #check mission
     triggers = check_triggers()
-    startIdle = triggers[0] #charging starts
+    startIdle, missionComplete, charging, returningHome = triggers 
 
-    if startIdle is True:
-        response_body = {
-            "returning_home": 1
-        }
-    else: 
-        response_body = {
-            "returning_home": 0
-        }
+    response_body = {
+        "startIdle": startIdle,
+        "missionComplete": missionComplete,
+        "charging": charging,
+        "returningHome": returningHome
+    }
 
     return response_body
 
 # returns the current task MiR is executing  
-class MockResponse:
-    def __init__(self, text):
-        self.text = text
-
-  
 def get_status():
     #status = requests.get(host + 'status', headers = headers)
     #print("status",status)
@@ -261,7 +254,7 @@ def check_triggers():
         
     if is_force_charging:
     	
-    	if battery_rounded >49:
+    	if battery_rounded >25:
             is_force_charging = False
     
 
@@ -270,7 +263,7 @@ def check_triggers():
         triggers[0] = True
 
     # Check if the current time is past 6 and the function hasn't been called yet
-    if current_time.hour > 6 and powerbank_flag:
+    if current_time.hour == 6 and powerbank_flag:
         returnToIdle()
         powerbank_flag = False
 
