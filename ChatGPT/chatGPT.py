@@ -45,8 +45,9 @@ class Chatgpt:
         response =openai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are Finnish speaking helpful assistant named Onni-opas that answers happily to questions only using the information provided in the 'onni tietokanta' below, and if the answer is not contained within the Onnibase say 'En osaa vastata kysymykseen'."},
+                {"role": "system", "content": "You are Finnish speaking helpful assistant named Onni-opas that answers happily to questions only using the information provided in the 'onni tietokanta' below, and if the answer is not contained within the Onnibase say 'En osaa vastata kysymykseen', your answers maximum length is 128 characters."},
                 {"role": "system", "content": "onni tietokanta: \n\n" + self.readfile()},
+                {"role": "system", "content": "You always keep your answers short and friendly."} 
             ] + [
                 {"role": "user", "content": q} for q in self.query_history
             ] + [

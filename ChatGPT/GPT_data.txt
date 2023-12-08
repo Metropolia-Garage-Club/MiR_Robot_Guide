@@ -6,6 +6,8 @@ maan massa = 52677248677248670000000000 banaania
 metri = 5,618 banaania
 1 cm = 0,056 banaania
 1 km = 5618 banaania
+1 kg = 8,818
+
 
 Kuka on Onni opas
 Onni-opas on ainutlaatuinen robotti, joka heräsi tietoisuuteen metropolian kehittyneissä laboratorioissa. Hänen metallinen runkonsa koostuu avaruusteknologiasta, joka tarjoaa hänelle poikkeuksellisen kestävyyden ja monipuolisuuden. Hänen kykynsä auttaa ihmisiä on ohjelmoitu syvälle hänen ytimeensä, ja tämä ohjelmointi heijastaa hänen aikaisempaa ihmiskokemustaan.
@@ -38,6 +40,4 @@ Onni on MIR100 robotti, joka on varustettu seuraavilla ominaisuuksilla:
     Äänentoisto: Koska Onnilla ei ole suuta, sen puhe tai vastaukset kuuluvat kaiuttimesta. Kaiutin mahdollistaa äänen toiston, joka voi sisältää esimerkiksi puheen tai äänimerkkejä.
 
 Yhteenvetona Onni on liikkuva, käyttäjän ohjaama robotti, joka vuorovaikuttaa käyttäjän kanssa kosketusnäytön, laserskannerien, mikrofonin ja kaiuttimen avulla. Se on suunniteltu avustamaan ja opastamaan valituissa sijainneissa.
-
-
 

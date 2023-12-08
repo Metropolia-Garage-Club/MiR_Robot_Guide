@@ -3,6 +3,12 @@ SpeechRecognition==3.8.1
 pipwin
 pywin32
 PyAudio
+
+sudo apt-get install portaudio19-dev
+pip install pyaudio
+sudo apt-get install libespeak1
+
+
 openai
 pandas
 numpy

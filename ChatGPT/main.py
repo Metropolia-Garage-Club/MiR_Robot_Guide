@@ -3,21 +3,24 @@ import pyttsx3
 #import voice as vc
 from gtts import gTTS
 import os
-import playsound
+#import playsound
 import chatGPT
-import requests
+import requests, json
+import datetime
 
 
 from pydub import AudioSegment
 from pydub.playback import play
 
 class Chatbot:
+    current_time = datetime.datetime.now()
     KEYWORD = ["onni", "onni opas", "robotti", "palvelija", "orja"]
-    LOCATIONS = {"kirjasto": 0, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "ruokala": 5}
+    LOCATIONS = {"ulyseus": 0, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "kirjasto": 4, "ruokala": 5, "ulyseus toimisto":6, "mene latamaan": 7, "takaisin kotiin": 8  }
     ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti", "mennään", "opasta"]
     GREETINGS=["hei", "moi", "moikka", "tere", "terve"]
     GPT_KEYWORD=["kysymys", "kyssäri", "tiedätkö", "kerro", "mitä","kuinka","mihin","mikä", "haluan","voitko"
-                 ,"voisitko","viitsitkö","viitsisitkö","kehtaatko","kuka","oletko","onko","haluatko","haluaisitko"]
+                 ,"voisitko","viitsitkö","viitsisitkö","kehtaatko","kuka","oletko","onko","haluatko","haluaisitko","toista"]
+    
 
     def __init__(self):
         self.initialize_components()
@@ -26,10 +29,10 @@ class Chatbot:
     def initialize_components(self):
         self.r = sr.Recognizer()
         self.m = sr.Microphone()
-        self.engine = pyttsx3.init()
-        self.engine.setProperty('rate', 150)
-        self.engine.connect('started-utterance', lambda name: self.stop())
-        self.engine.connect('finished-utterance', lambda name, completed: self.listen())
+        #self.engine = pyttsx3.init()
+        #self.engine.setProperty('rate', 150)
+        #self.engine.connect('started-utterance', lambda name: self.stop())
+        #self.engine.connect('finished-utterance', lambda name, completed: self.listen())
 
     def _callback(self, recognizer, audio):
         try:
@@ -67,6 +70,22 @@ class Chatbot:
         except Exception as e:
             # Handle exceptions appropriately
             return {"success": False, "error": str(e)}
+        
+    def communicate_with_mir_api_satatus(self):
+        try:
+            # Make a request to the MiR API
+            print("sending request")
+
+            api_url = "http://127.0.0.1:5000/GPT"  # Update the URL based on your actual API endpoint
+            data = json.loads(requests.get(api_url))
+
+            return data.get("mission")
+
+        except Exception as e:
+            # Handle exceptions appropriately
+            return {"success": False, "error": str(e)}
+
+
 
     def handle_keyword(self, words):
         try:
@@ -76,12 +95,15 @@ class Chatbot:
 
                 #Ensimmäinen osa chatgpt
                 if location:
+                    self.say("Pieni hetki prosessoin pyyntöä...")
                     print(f"-> Paikka jonne sinut johdatan: {location}")
                     #vastaus = vc.route(self.LOCATIONS[location])
                     print(str(self.LOCATIONS[location]))
                     result = self.communicate_with_mir_api(str(self.LOCATIONS[location]))
                     print(result)
                     self.say("Opastan sinut paikkaan: "+str(location)+". Seuraa minua")
+                    smalltalk = response = self.chatgpt_instance.gpt_query(str("kerro kolme hauskaa faktaa pai                                                                                                                         kasta: "+ str(location)))
+                    self.say(smalltalk)
             elif any(keyword in words for keyword in self.GPT_KEYWORD):
                 question = next((loc for loc in self.GPT_KEYWORD if loc in words), None)
                 if question:
@@ -92,6 +114,7 @@ class Chatbot:
             else:
                 self.say(f'tuo ei ollut paikka eikä kysymys! joten en voi auttaa sinua.')
         except Exception as e:
+            self.say(f'Anteeksi en pystynyt prosessoimaan pyyntöä. Voitko toistaa mitä sanoit?')
             print(f'Virhe käsittelyssä: {e}')
 
     def listen(self):
@@ -105,12 +128,14 @@ class Chatbot:
 
     def start(self):
         self.listen()
-        self.engine.startLoop()
+        #self.engine.startLoop()
         self.listening = True
         while self.listening:
-            self.engine.iterate()
-        self.endLoop()
+            pass
+       # self.endLoop()
         self.stop()
+
+
 
     def stop(self):
         print("*Kuuntelulaitteiden yhteydet katkaistu*")
