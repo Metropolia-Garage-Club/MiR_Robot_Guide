@@ -6,7 +6,7 @@ maan massa = 52677248677248670000000000 banaania
 metri = 5,618 banaania
 1 cm = 0,056 banaania
 1 km = 5618 banaania
-1 kg = 8,818
+1 kg = 8,818 banaania
 
 
 Kuka on Onni opas

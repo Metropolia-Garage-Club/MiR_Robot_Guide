@@ -3,13 +3,18 @@ import Office from "./img";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import MovingToLocation from "./pages/MovingToLocation";
+import Charging from "./pages/Charging";
+import GoingHome from "./pages/GoingHome";
+import MissionComplete from "./pages/MissionComplete";
 
 export default function App() {
   const [selected, setSelected] = useState(undefined);
   const [startIdle, setStartIdle] = useState(false);
   const [charging, setCharing] = useState(false);
   const [missionComplete, setMissionComplete] = useState(false);
-  const [returningHome, setReturningHome] = useState(false)
+  const [returningHome, setReturningHome] = useState(false);
+  const [currentView, setCurrentView] = useState("normal");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,9 +63,26 @@ export default function App() {
       const res = response.data
       console.log(res)
       setStartIdle(res.startIdle)
+      /*
       setMissionComplete(res.missionComplete)
       setCharing(res.charging)
       setReturningHome(res.returningHome)
+      */
+    if (res.charging) {
+      setCurrentView("charging");
+    } else if (res.returningHome) {
+      setCurrentView("returningHome");
+    } 
+    else if (res.moving) {
+      setCurrentView("moving");
+    } else if (res.missionComplete){
+      setCurrentView("complete")
+    }
+    else if (res.startIdle){
+    }
+    else {
+      setCurrentView("normal");
+    }
     })
     .catch((error) => {
       if (error.response) {
@@ -118,7 +140,12 @@ export default function App() {
 
   return (
     <div className="App">
-      
+    {currentView === "charging" && <Charging />}
+    {currentView === "returningHome" && <GoingHome />}
+    {currentView === "moving" && <MovingToLocation />}
+    {currentView === "complete" && <MissionComplete />}
+    {currentView === "normal" && (
+      <>
       <div className="rooms">
       <div
 		      onClick={() => {toIdle()}}
@@ -290,12 +317,16 @@ export default function App() {
           Feedback
         </div>
       </div>
+      </>
+    )}
+    {currentView === "normal" && (
       <Office
         selected={selected}
         onHovered={(id) => {
           setSelected(id);
         }}
       />
+    )}
     </div>
   );
 }

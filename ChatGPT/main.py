@@ -15,10 +15,10 @@ from pydub.playback import play
 class Chatbot:
     current_time = datetime.datetime.now()
     KEYWORD = ["onni", "onni opas", "robotti", "palvelija", "orja"]
-    LOCATIONS = {"ulyseus": 0, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "kirjasto": 4, "ruokala": 5, "ulyseus toimisto":6, "mene latamaan": 7, "takaisin kotiin": 8  }
+    LOCATIONS = {"ulyseus": 0, "vessa": 1, "wc": 1, "auditorio": 2, "kahvila": 3, "hissi": 4, "kirjasto": 4, "ruokala": 5, "ulyseus toimisto":6, "mene latamaan": 7, "takaisin kotiin": 8  }
     ROUTE_TRIGGERS = ["missä", "miten", "vie", "näytä", "johdata", "navigoi", "reitti", "mennään", "opasta"]
-    GREETINGS=["hei", "moi", "moikka", "tere", "terve"]
-    GPT_KEYWORD=["kysymys", "kyssäri", "tiedätkö", "kerro", "mitä","kuinka","mihin","mikä", "haluan","voitko"
+    GREETINGS = ["hei", "moi", "moikka", "tere", "terve"]
+    GPT_KEYWORD = ["kysymys", "kyssäri", "tiedätkö", "kerro", "mitä","kuinka","mihin","mikä", "haluan","voitko"
                  ,"voisitko","viitsitkö","viitsisitkö","kehtaatko","kuka","oletko","onko","haluatko","haluaisitko","toista"]
     
 
@@ -71,7 +71,7 @@ class Chatbot:
             # Handle exceptions appropriately
             return {"success": False, "error": str(e)}
         
-    def communicate_with_mir_api_satatus(self):
+    def communicate_with_mir_api_status(self):
         try:
             # Make a request to the MiR API
             print("sending request")

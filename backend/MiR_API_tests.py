@@ -156,7 +156,8 @@ def get_status():
     #print("status",status)
     api_response = {
         "battery_percentage": 75,
-        "mission_text": "Charging... Waiting for new mission...",
+        "mission_text": "No",
+        #"mission_text": "Charging... Waiting for new mission...",
         "state_text": "Executing",
         "state_id": 3
         # Add other fields as needed
@@ -195,11 +196,11 @@ def check_triggers():
     
     current_time = datetime.datetime.now()
     
-    triggers = [False, True, False, False, False]     # triggers[0] = True for idle screen 
+    triggers = [False, False, False, False, False]     # triggers[0] = True for idle screen 
                                                 # triggers[1] = True when current mission is complete.
                                                 # triggers[2] = True when robot is charging and not accepting missions
                                                 # triggers[3] = True robot is returning to idle position
-                                                # 
+                                                # triggers[4] = True when robot is moving to a destination
                                                 #
                                                 #
                                                 #
@@ -302,5 +303,5 @@ def check_triggers():
         powerbank_flag = True
         charge_powerbank()
         
-        
+    print (triggers)
     return triggers
