@@ -277,6 +277,7 @@ def check_triggers():
         requests.delete(host + 'mission_queue', headers = headers)
         powerbank_flag = False
         is_force_charging = False
+        mission_timer = None
     	#time.sleep(50)
         returnToIdle()
 
@@ -285,6 +286,7 @@ def check_triggers():
         requests.put(host + 'status', json = error_json, headers = headers)
         powerbank_flag = False
         is_force_charging = False
+        mission_timer = None
         returnToIdle()
 
     # if mir is paused(state-id #4), unpause MiR(state-id #3)
@@ -295,7 +297,6 @@ def check_triggers():
     if not mission_timer == None:
         if time.time() - mission_timer >= 10:
             mission_timer = None
-            
             returnToIdle()
 
     # check to make sure that powerbank doesn't drain MiR batteries while not in charger
