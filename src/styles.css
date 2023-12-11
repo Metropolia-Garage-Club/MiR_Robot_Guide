@@ -7,7 +7,6 @@
   padding: 40px;
 }
 
-
 .feedback {
   cursor: pointer;
   border: 1px solid #030303;
@@ -51,11 +50,17 @@
   padding: 12px 12px;
   margin-top: 4px;
   border-radius: 2px;
+  transition: background-color 0.3s;
+}
+
+.room-link:hover {
+  background: color #f0f0f0;
 }
 
 .room-link.active {
   border-color: #333;
   font-weight: 600;
+  background-color: #f0f0f0;
 }
 
 .room {
@@ -65,7 +70,7 @@
 }
 
 .room.active {
-  fill-opacity: 0.2;
+  fill-opacity: 0.1;
   stroke-opacity: 1;
 }
 
@@ -93,3 +98,5 @@
 	fill: #34d399;
 	stroke: #34d399;
 }
+
+

@@ -1,43 +1,45 @@
-# -*- coding: utf-8 -*-
-"""
-Niko Hutri 7.11.2023
-
-PasilaHUB MIR API test
-"""
-
-##rom tkinter import *
 #import pprint
-#import RPi.GPIO as GPIO
 import os
+import Jetson.GPIO as GPIO
 import requests, json
 from flask import Blueprint, request, jsonify
 import datetime
+import time
 
 #pp = pprint.PrettyPrinter(indent=4)
 
 # Pin Definitions
 output_pin = 18  # BCM pin 18, BOARD pin 12
+powerbank_flag = False # Global variable to track function calls
+status_check = time.time()
 log_file_path = "activity_log.txt"
+is_force_charging = False
+mission_count = 0
+mission_queue_id = None
+mission_timer = None
+mission_num = None
+
+status_json = {"state_id": 3} #json-object used to unpause MiR
+error_json = {"clear_error": True}
 
 
 # Pin Setup:
-#GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
+GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
 # set pin as an output pin with optional initial state of HIGH
-#GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.LOW)
 
-#curr_value = GPIO.LOW
-curr_value = False
+curr_value = 0
 
-#get request
-ip = '192.168.0.50'
+# MiR100 address for API calls
+ip = '192.168.0.52'
 host = 'http://' + ip + '/api/v2.0.0/'
 
-#Format Headers
+# Format Headers and authentication for API calls
 headers = {}
 headers['Content-Type']= 'application/json'
 headers['Authorization'] = 'Basic ZGlzdHJpYnV0b3I6YjcyZDlkYzljMWYzNjg2MTBiMzBiZTJjZDc5OTAwOTAzYzk5MDYzNzA3NTY3M2NkMzliYjA4ZmJjYjc2YmIzYQ=='
 
-#Populate with Mission GUID#
+# Populate with Mission GUID#
 missions = [
     "62cc1d9f-71ab-11ee-a445-000129922f30",     #0 - Ulyseus
     "150590c1-71ac-11ee-a445-000129922f30",     #1 - WC1 (in Kahvila)
@@ -45,11 +47,12 @@ missions = [
     "c652434b-7254-11ee-a57f-000129922f30",     #3 - Kahvila 
     "e1246867-7254-11ee-a57f-000129922f30",     #4 - Hissit/Kirjasto
     "07417ecd-7255-11ee-a57f-000129922f30",     #5 - Ruokala         
-    "bc4bab5e-82cc-11ee-973c-000129922f30"      #6 - WC2 / Ulysseus Toimisto 
+    "bc4bab5e-82cc-11ee-973c-000129922f30",     #6 - WC2 / Ulysseus Toimisto
+    "b28d950c-83a1-11ee-ab62-000129922f30",     #7 - Forced charging
+    "4e0f7633-83a0-11ee-ab62-000129922f30"      #8 - Do I need to charge (This is called automatically by MiR after every mission, generally this one does not need to be called separately)
 ]
-
+#create log file with default counts
 def initializeLog():
-    #Initialize log file with default counts
     with open(log_file_path, "w") as logFile:
         logFile.write("missions_posted: 0\nface-1: 0\nface-2: 0\nface-3: 0\nface-4: 0\nface-5: 0")
 
@@ -70,117 +73,282 @@ def updateLog(type, count=1):
             lines[i] = f"{type}: {current_count + count}\n"
             updated = True
 
-    
     if not updated:
         lines.append(f"{type}: {count}\n")
 
     with open(log_file_path, "w") as logFile:
         logFile.writelines(lines)
 
-
+#All the diffrent API-blueprints are stored here
 mir_api = Blueprint("mir_api",__name__)
 
 @mir_api.route("/feedback",methods=['POST'])
 def saveFeedbackData():
     feedback_data = str(request.args.get('selectedFace'))
-
     updateLog(feedback_data)
-
-
     return jsonify({"status": "success"})
 
+@mir_api.route("/GPT", methods=['POST'])
+def GPT_post_mission():
+    global mission_num
+    data = json.loads(get_status())
+    mission_queue_id = data.get("mission_queue_id")
+    mission_text = data.get("mission_text")
 
+    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag and not is_force_charging:
+        y = json.loads(request.data)
+        print(y)
+        room_num = int(y.get('room_num'))
+        print(room_num)
+        mission_num = room_num
+        mission_id = {"mission_id": missions[room_num]} #Mission guid here
+        print("mission_id",mission_id)
+        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
+        updateLog("missions_posted")
+        return jsonify ({"status": str(post_mission)})
+    	#return "mission posted"
+
+    else:
+        return jsonify({"status": "Mission already in queue"})
+    
+@mir_api.route("/GPT", methods=['GET'])
+def gpt_get_status():
+    
+    return {"mission": mission_num}
+    
 @mir_api.route("/MiR_api",methods=['POST'])
 def post_missions():
-    room_num = int(request.args.get('room_num'))
-    
-    mission_id = {"mission_id": missions[room_num]} #Mission guid here
+    global mission_num
+    data = json.loads(get_status())
+    mission_queue_id = data.get("mission_queue_id")
+    mission_text = data.get("mission_text")
 
-    print("mission_id",mission_id)
-    #post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
-    return mission_id
-    #return "mission posted"
+    if mission_queue_id == None or mission_text == "Charging... Waiting for new mission..." and not powerbank_flag and not is_force_charging:
+       
+        room_num = int(request.args.get('room_num'))
+        mission_num = room_num
+        mission_id = {"mission_id": missions[room_num]} #Mission guid here
+        print("mission_id",mission_id)
+        post_mission = requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+    	#post_mission = requests.delete(host + 'mission_queue', headers = headers)
+        updateLog("missions_posted")
+        return jsonify ({"status": str(post_mission)})
+    	#return "mission posted"
+
+    else:
+        return jsonify({"status": "Mission already in queue"})
 
 @mir_api.route("/MiR_api",methods=['GET'])
 def get_missioncomplete():
     #check mission
     triggers = check_triggers()
-    startIdle = triggers[0]
+    startIdle, missionComplete, charging, returningHome, moving = triggers 
 
-    if startIdle is True:
-        response_body = {
-            "returning_home": 1
-        }
-    else: 
-        response_body = {
-            "returning_home": 0
-        }
+    response_body = {
+        "startIdle": startIdle,
+        "missionComplete": missionComplete,
+        "charging": charging,
+        "returningHome": returningHome,
+        "moving": moving
+    }
 
     return response_body
 
-
-class MockResponse:
-    def __init__(self, text):
-        self.text = text
-
-  
+# returns the current task MiR is executing  
 def get_status():
-    #status = requests.get(host + 'status', headers = headers)
-    #print("status",status)
-    api_response = {
-        "battery_percentage": 75,
-        "mission_text": "Charging... Waiting for new mission...",
-        "state_text": "Executing"
-        # Add other fields as needed
-    }
-
-    status_string = json.dumps(api_response)
-    status = MockResponse(status_string)
-
+    status = requests.get(host + 'status', headers = headers)
+    print("status",status)
     return status.text
+   
+data = json.loads(get_status())
 
-def battery_val():
-    data = json.loads(get_status())
-    battery = data.get("battery_percentage")
-    #print("battery",battery)
-    return battery
+# deletes mission queue, then starts charging
+def charge_powerbank():
+    mission_id = {"mission_id": missions[7]} #Mission guid here
+    print("mission_id",mission_id)
+    requests.delete(host + 'mission_queue', headers = headers)
+    requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+
+def returnToIdle():
+    mission_id = {"mission_id": missions[8]} #Mission guid here
+    print("mission_id",mission_id)
+    requests.post(host + 'mission_queue', json = mission_id, headers = headers)
+
+
+def contains_keywords(input_string, keywords):
+    # Convert both the input string and keywords to lowercase for case-insensitive matching
+    input_string_lower = input_string.lower()
+    keywords_lower = [keyword.lower() for keyword in keywords]
+
+    # Check if all keywords are present in the lowercase input string
+    return all(keyword in input_string_lower for keyword in keywords_lower)
+
+
+def checkMissionStatus(mission_queue_id):
+    data = requests.get(host + 'mission_queue/' + str(mission_queue_id), headers = headers)   
+    data = data.text
+    data = json.loads(data)
+    
+    state = data.get("state") 
+    if state == "Executing":
+        result = False
+    elif state in ["Done", "Aborted"]:
+        result = True
+    else:
+    # Handle other cases if needed
+        result = None
+
+    return result
+
+
+
 
 def check_triggers():
+    #Define global variables.
+    global powerbank_flag
+    global status_check
+    global data
+    global curr_value
+    global is_force_charging
+    global mission_count
+    global status_json
+    global mission_timer
+    global mission_num
+    global mission_queue_id
+    
+    
+    
     current_time = datetime.datetime.now()
-    triggers = [False, False]   # triggers[0] = True for idle screen / triggers[1] = setting relay.
-    data = json.loads(get_status())
+    
+    triggers = [False, False, False, False, False]      # triggers[0] = True for idle screen 
+                                                        # triggers[1] = True when current mission is complete.
+                                                        # triggers[2] = True when robot is charging and not accepting missions
+                                                        # triggers[3] = True robot is returning to idle position
+                                                        # triggers[4] = True when robot is moving 
+                                                        #
+                                                        #
+                                                        #
+
+
+
+
+    if time.time() - status_check >= 1: #send a new API call to MiR every 1 seconds.
+        data = json.loads(get_status())
+        status_check = time.time()
+        
+    
+    
     mission_text = data.get("mission_text")
     state_text = data.get("state_text")
-    battery = int(round(battery_val()))
-    string = "Charging until battery reaches 95% (Current: " + str(battery) + "%)..."
-    #print(string)
+    battery = data.get("battery_percentage")
+    battery_rounded = int(round(battery))
+    string = "Charging until battery reaches 50% (Current: " + str(battery_rounded) + "%)..."
+    state_id = int(data.get("state_id"))
+    #print(state_id)
     
-   
     
+    print("Powerbank flag is " + str(powerbank_flag))
+    print("Current relay value is " + str(curr_value))
+    print("Current hour is " + str(current_time.hour))
+    print("Current battery is " + str(battery_rounded))
+    print("is_force_charging is " + str(is_force_charging))
+
+    if not mission_num == None:
+        if mission_queue_id == None: 
+            mission_queue_id = data.get("mission_queue_id") 
+        else: 
+            mission_status = checkMissionStatus(mission_queue_id)
+            if mission_status:
+                mission_timer = time.time()
+                mission_queue_id = None
+                mission_num = None
+
+    if not mission_timer == None:
+        if time.time() - mission_timer >= 10:
+            mission_timer = None
+            returnToIdle()
+
+
+          
+    if contains_keywords(mission_text, ["Moving", "to"]):
+        triggers[4] = True
+    
+    #if emergency stop is engaged for atleast 3 seconds deletes the mission queue and checks the battery level and returns to idle or charger
+    if state_text == "EmergencyStop":
+        requests.delete(host + 'mission_queue', headers = headers)
+        powerbank_flag = False
+        is_force_charging = False
+    	#time.sleep(50)
+        returnToIdle()
+        
+    if state_text == "Error":
+        requests.delete(host + 'mission_queue', headers = headers)
+        requests.put(host + 'status', json = error_json, headers = headers)
+        powerbank_flag = False
+        is_force_charging = False
+        returnToIdle()
+    
+    # if mir is paused(state-id #4), unpause MiR(state-id #3)
+    if state_id == 4:
+        requests.put(host + 'status', json = status_json, headers = headers)
+    	#print(x)
+
+    # check to make sure that powerbank doesn't drain MiR batteries while not in charger
+    if not powerbank_flag and curr_value == 1:
+        GPIO.output(output_pin, GPIO.LOW)
+        curr_value = 0
+
+    #  While not in charger unhook the powerbank charging  
+    if not mission_text == "Charging... Waiting for new mission...":
+        GPIO.output(output_pin, GPIO.LOW)
+        curr_value = 0
+        
+    # While mission is running, go to idle screen    
     if mission_text == string and state_text == "Executing":
         triggers[0] = True
+        
     
-    if mission_text == "Charging... Waiting for new mission..." and state_text == "Executing":
+    
+    # if MiR is waiting for a mission in charger, set the relay to charge the power-bank
+    if mission_text == "Charging... Waiting for new mission...":
         triggers[0] = True
-        triggers[1] = True
 
-    if current_time.hour < 18 or current_time.hour > 7:
-        triggers[1] = False
-
-
-    # if triggers[1] == True:
+        if powerbank_flag:
             
-    #     GPIO.output(output_pin, GPIO.HIGH)
+            GPIO.output(output_pin, GPIO.HIGH)
+            curr_value = 1
+    
+        else: 
+            GPIO.output(output_pin, GPIO.LOW)
+            curr_value = 0
 
-    # else: 
-    #     GPIO.output(output_pin, GPIO.LOW)
+    # if battery is under 10% and not already in charger, start charging
+    if battery_rounded < 20 and not is_force_charging:
+        triggers[2]
+        charge_powerbank()
+        is_force_charging = True
+        
+    if is_force_charging:
+    	
+    	if battery_rounded >22:
+            is_force_charging = False
+    
 
+    # if ready for new mission go to idle screen
+    if mission_text == "Waiting for new missions..." and state_text == "Ready":
+        triggers[0] = True
 
+    # Check if the current time is past 6 and the function hasn't been called yet
+    if current_time.hour == 7 and powerbank_flag:
+        returnToIdle()
+        powerbank_flag = False
 
+    # Check if the current time is between 2 AM and 6 AM
+    #if 1 <= current_time.hour <= 5 and not powerbank_flag:
+    if (current_time.hour > 21 or current_time.hour <= 6) and not powerbank_flag:
+        powerbank_flag = True
+        charge_powerbank()
+        
+    print (triggers)
     return triggers
-
-
-
-
-
-

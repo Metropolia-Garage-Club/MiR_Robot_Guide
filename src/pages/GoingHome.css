@@ -1,0 +1,33 @@
+.going-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #e67300; 
+    background-color: #f0f0f0; 
+  }
+  
+  .going-home .home-icon {
+    font-size: 4rem;
+    animation: homeIcon 1s ease-in-out infinite alternate;
+  }
+  
+  .going-home h2 {
+    margin-top: 20px;
+    font-size: 2rem;
+  }
+  
+  .going-home p {
+    font-size: 1.2rem;
+  }
+  
+  @keyframes homeIcon {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.2);
+    }
+  }
+  
