@@ -1,10 +1,11 @@
 import openai
 import os
+#from openapyenvi import OpenAI
 
 class Chatgpt:
     API_KEY="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"
 
-    from openai import OpenAI
+    
 
 
     def __init__(self):
@@ -13,7 +14,7 @@ class Chatgpt:
         self.query_history = []      # Säilytetään viisi viimeisintä kysymystä tässä
         self.response_history = []
 
-    def readfile(self, file_path="ChatGPT/CourseInfo.txt"):
+    def readfile(self, file_path="ChatGPT/GPT_data.txt"):
         try:
             # Hae nykyinen työhakemisto
             current_directory = os.getcwd()
@@ -44,8 +45,9 @@ class Chatgpt:
         response =openai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are Finnish speaking helpful assistant named Onni-opas that answers sarcastically questions only using the information provided in the kurssitiedot below, and if the answer is not contained within the kurssitiedot say 'En osaa vastata kysymykseen'."},
-                {"role": "system", "content": "Kurssitiedot: \n\n" + self.readfile()},
+                {"role": "system", "content": "You are Finnish speaking helpful assistant named Onni-opas that answers happily to questions only using the information provided in the 'onni tietokanta' below, and if the answer is not contained within the Onnibase say 'En osaa vastata kysymykseen', your answers maximum length is 128 characters."},
+                {"role": "system", "content": "onni tietokanta: \n\n" + self.readfile()},
+                {"role": "system", "content": "You always keep your answers short and friendly."} 
             ] + [
                 {"role": "user", "content": q} for q in self.query_history
             ] + [
@@ -59,7 +61,7 @@ class Chatgpt:
         query_response = response.choices[0].message.content
 
         # Lisätään uusi vastaus historiaan
-        self.response_history.append(query_response)
+        self.response_history.append(str(query_response))
 
         return query_response
 

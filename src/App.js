@@ -3,16 +3,24 @@ import Office from "./img";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import MovingToLocation from "./pages/MovingToLocation";
+import Charging from "./pages/Charging";
+import GoingHome from "./pages/GoingHome";
+import MissionComplete from "./pages/MissionComplete";
 
 export default function App() {
   const [selected, setSelected] = useState(undefined);
-  const [goHome, setGoHome] = useState(0);
+  const [startIdle, setStartIdle] = useState(false);
+  const [charging, setCharing] = useState(false);
+  const [missionComplete, setMissionComplete] = useState(false);
+  const [returningHome, setReturningHome] = useState(false);
+  const [currentView, setCurrentView] = useState("normal");
   const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(async () => {
       await isGoHome(); //10 seconds
-      if (goHome) {
+      if (startIdle) {
         //const timeout1 = setTimeout(idleWarning, 7000);
         const timeout2 = setTimeout(idleTimeout2, 10000); //60000 = 1 min, 10000 = 10 seconds
         return () => {
@@ -22,7 +30,7 @@ export default function App() {
     }
   }, 10000);
   return  () => clearInterval(interval);
-}, [goHome]);
+}, [startIdle]);
   
   function idleTimeout2() {
     axios({
@@ -54,7 +62,27 @@ export default function App() {
     .then((response) => {
       const res = response.data
       console.log(res)
-      setGoHome(res.returning_home)
+      setStartIdle(res.startIdle)
+      /*
+      setMissionComplete(res.missionComplete)
+      setCharing(res.charging)
+      setReturningHome(res.returningHome)
+      */
+    if (res.charging) {
+      setCurrentView("charging");
+    } else if (res.returningHome) {
+      setCurrentView("returningHome");
+    } 
+    else if (res.moving) {
+      setCurrentView("moving");
+    } else if (res.missionComplete){
+      setCurrentView("complete")
+    }
+    else if (res.startIdle){
+    }
+    else {
+      setCurrentView("normal");
+    }
     })
     .catch((error) => {
       if (error.response) {
@@ -64,7 +92,7 @@ export default function App() {
         }
     })
 
-    console.log(goHome)
+    console.log(startIdle)
   }
 
   const handleFeedbackClick = () => {
@@ -112,7 +140,12 @@ export default function App() {
 
   return (
     <div className="App">
-      
+    {currentView === "charging" && <Charging />}
+    {currentView === "returningHome" && <GoingHome />}
+    {currentView === "moving" && <MovingToLocation />}
+    {currentView === "complete" && <MissionComplete />}
+    {currentView === "normal" && (
+      <>
       <div className="rooms">
       <div
 		      onClick={() => {toIdle()}}
@@ -284,12 +317,16 @@ export default function App() {
           Feedback
         </div>
       </div>
+      </>
+    )}
+    {currentView === "normal" && (
       <Office
         selected={selected}
         onHovered={(id) => {
           setSelected(id);
         }}
       />
+    )}
     </div>
   );
 }

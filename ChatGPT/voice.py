@@ -1,5 +1,7 @@
 import requests
 import json
+from flask import Blueprint, request, jsonify
+#rom ..backend.MiR_API import MirController
 
 SERVER_IP = "192.168.0.52"
 URL= f"http://{SERVER_IP}"+"/api/v2.0.0/"+"mir_api"
@@ -11,7 +13,11 @@ headers['Authorization'] = 'Basic ZGlzdHJpYnV0b3I6YjcyZDlkYzljMWYzNjg2MTBiMzBiZT
 
 #Reitti robotille -> käyttää mir_api:n API:a
 
-def route(num):
+#mirControllerClass = MirController()
+
+
+
+def route(num):   
     data = {"room_num": num}
     try:
         print (json.dumps(data))
@@ -27,3 +33,4 @@ def route(num):
         print(f"An error occurred during the request: {e}")
         pass
     return None  
+    

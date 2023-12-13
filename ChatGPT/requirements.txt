@@ -3,6 +3,12 @@ SpeechRecognition==3.8.1
 pipwin
 pywin32
 PyAudio
+
+sudo apt-get install portaudio19-dev
+pip install pyaudio
+sudo apt-get install libespeak1
+
+
 openai
 pandas
 numpy
@@ -40,6 +46,8 @@ sudo apt-get install libgirepository1.0-dev
 pip install pygobject
 
 sudo apt-get install pavucontrol (pavucontrol komento)
+
+sudo apt-get install ffmpeg
 
 
 bluetooth:

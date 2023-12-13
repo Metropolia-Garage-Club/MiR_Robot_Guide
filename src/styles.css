@@ -51,11 +51,17 @@
   padding: 12px 12px;
   margin-top: 4px;
   border-radius: 2px;
+  transition: background-color 0.3s;
+}
+
+.room-link:hover {
+  background: color #f0f0f0;
 }
 
 .room-link.active {
   border-color: #333;
   font-weight: 600;
+  background-color: #f0f0f0;
 }
 
 .room {
