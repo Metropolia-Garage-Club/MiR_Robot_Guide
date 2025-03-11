@@ -226,11 +226,9 @@ def check_triggers():
     triggers = [False, False, False, False, False]      # triggers[0] = True for idle screen 
                                                         # triggers[1] = True when current mission is complete.
                                                         # triggers[2] = True when robot is charging and not accepting missions
-                                                        # triggers[3] = True robot is returning to idle position
+                                                        # triggers[3] = True when robot is returning to idle position
                                                         # triggers[4] = True when robot is moving 
-                                                        #
-                                                        #
-                                                        #
+
 
 
 
@@ -380,15 +378,6 @@ def check_triggers():
           
     if contains_keywords(mission_text, ["Moving", "to"]):
         triggers[4] = True
-    
-
-        
-    
-    
-
-
-
-   
         
     print (triggers)
     return triggers

@@ -3,7 +3,7 @@ import os
 #from openapyenvi import OpenAI
 
 class Chatgpt:
-    API_KEY="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"
+    API_KEY="API KEY HERE"
 
     
 
